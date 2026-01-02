@@ -28,9 +28,10 @@ const PropertyCard = ({ property, onAddToFavourites, onViewDetails, onDragStart,
   // Handle drag start for favorites
   const handleDragStart = (e) => {
     setIsDragging(true);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('propertyId', property.id.toString());
     if (onDragStart) {
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('propertyId', property.id.toString());
+      onDragStart();
     }
   };
 

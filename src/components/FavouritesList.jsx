@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { encodeHTML } from '../utils/securityUtils';
 
-const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOver, onDragOutRemove = null }) => {
+const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, onDragOutRemove = null }) => {
   // Track drag state and which item is being dragged
   const [isDragOver, setIsDragOver] = useState(false);
   const [draggedItemId, setDraggedItemId] = useState(null);
@@ -33,8 +32,8 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOver, onD
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
-    const propertyId = parseInt(e.dataTransfer.getData('propertyId'));
-    if (onDrop) {
+    const propertyId = e.dataTransfer.getData('propertyId');
+    if (propertyId && onDrop) {
       onDrop(propertyId);
     }
   };
@@ -78,34 +77,48 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOver, onD
               <div 
                 key={property.id} 
                 className={`favourite-item ${draggedItemId === property.id ? 'dragging-out' : ''}`}
-              draggable
-              onDragStart={(e) => handleRemoveDragStart(e, property.id)}
-              onDragEnd={handleItemDragEnd}
-              role="listitem"
-            >
-              <Link to={`/property/${property.id}`}>
-                <img 
-                  src={property.images[0]} 
-                  alt={encodeHTML(property.description)} 
-                  className="favourite-thumbnail"
-                />
-              </Link>
-              <div className="favourite-info">
-                <Link to={`/property/${property.id}`}>
-                  <h4>{formatPrice(property.price)}</h4>
-                  <p>{encodeHTML(property.location)}</p>
-                </Link>
-                <button 
-                  onClick={() => onRemove(property.id)} 
-                  className="btn-remove"
-                  aria-label="Remove from favourites"
-                  title="Remove from favourites"
+                draggable
+                onDragStart={(e) => handleRemoveDragStart(e, property.id)}
+                onDragEnd={handleItemDragEnd}
+                role="listitem"
+              >
+                <div 
+                  onClick={() => onViewDetails(property.id)}
+                  className="favourite-thumbnail-container"
+                  style={{ cursor: 'pointer' }}
+                  role="button"
+                  tabIndex="0"
+                  onKeyDown={(e) => e.key === 'Enter' && onViewDetails(property.id)}
                 >
-                  ✕
-                </button>
+                  <img 
+                    src={property.images[0]} 
+                    alt={encodeHTML(property.description)} 
+                    className="favourite-thumbnail"
+                  />
+                </div>
+                <div className="favourite-info">
+                  <div 
+                    onClick={() => onViewDetails(property.id)}
+                    className="favourite-details"
+                    style={{ cursor: 'pointer' }}
+                    role="button"
+                    tabIndex="0"
+                    onKeyDown={(e) => e.key === 'Enter' && onViewDetails(property.id)}
+                  >
+                    <h4>{formatPrice(property.price)}</h4>
+                    <p>{encodeHTML(property.location)}</p>
+                  </div>
+                  <button 
+                    onClick={() => onRemove(property.id)} 
+                    className="btn-remove"
+                    aria-label="Remove from favourites"
+                    title="Remove from favourites"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           </div>
           <div className="favourites-hint">
             <p>💡 Drag items out to remove them</p>

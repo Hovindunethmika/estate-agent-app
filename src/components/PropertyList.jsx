@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropertyCard from './PropertyCard';
 
-const PropertyList = ({ properties, onAddToFavourites, onViewDetails, favourites = [], onRemoveFromFavourites = null }) => {
+const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStart, favourites = [], onRemoveFromFavourites = null }) => {
   // Track view mode and sort option
   const [sortBy, setSortBy] = useState('default');
   const [viewMode, setViewMode] = useState('grid');
@@ -116,7 +116,7 @@ const PropertyList = ({ properties, onAddToFavourites, onViewDetails, favourites
             property={property}
             onAddToFavourites={onAddToFavourites}
             onViewDetails={onViewDetails}
-            onDragStart={() => {}}
+            onDragStart={onDragStart}
             isDraggable={true}
             isFavourited={isFavourited(property.id)}
             onRemoveFromFavourites={onRemoveFromFavourites}

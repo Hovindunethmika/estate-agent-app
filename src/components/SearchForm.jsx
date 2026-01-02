@@ -1,298 +1,42 @@
 import React, { useState, useRef } from 'react';
+import { DropdownList, NumberPicker, DatePicker } from 'react-widgets';
+import 'react-widgets/styles.css';
 import { sanitizeInput, validatePostcode } from '../utils/securityUtils';
 
-// Custom dropdown select component
-const SelectWidget = ({ 
-  id, 
-  label, 
-  value, 
-  onChange, 
-  options, 
-  disabled = false,
-  hint = ''
-}) => {
-  const [focused, setFocused] = useState(false);
-  
-  return (
-    <div className="widget-select-wrapper">
-      <label htmlFor={id} className="widget-label">
-        {label}
-      </label>
-      <div className="widget-select-container">
-        <select
-          id={id}
-          name={id}
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-          className={`widget-select ${focused ? 'focused' : ''}`}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          aria-describedby={hint ? `${id}-hint` : undefined}
-        >
-          {options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <span className="widget-select-arrow">▼</span>
-      </div>
-      {hint && (
-        <span id={`${id}-hint`} className="widget-hint">
-          {hint}
-        </span>
-      )}
-    </div>
-  );
-};
-
 /**
- * Custom Number Input Component - Enhanced number widget
- */
-const NumberInputWidget = ({ 
-  id, 
-  label, 
-  value, 
-  onChange, 
-  placeholder = '',
-  min = 0,
-  error = '',
-  hint = ''
-}) => {
-  const [focused, setFocused] = useState(false);
-  
-  return (
-    <div className="widget-input-wrapper">
-      <label htmlFor={id} className="widget-label">
-        {label}
-      </label>
-      <div className={`widget-input-container ${focused ? 'focused' : ''} ${error ? 'error' : ''}`}>
-        <input
-          type="number"
-          id={id}
-          name={id}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          min={min}
-          className="widget-input"
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          aria-invalid={!!error}
-        />
-      </div>
-      {error && (
-        <span id={`${id}-error`} className="widget-error" role="alert">
-          ✕ {error}
-        </span>
-      )}
-      {hint && !error && (
-        <span id={`${id}-hint`} className="widget-hint">
-          {hint}
-        </span>
-      )}
-    </div>
-  );
-};
-
-// Custom text input component
-const TextInputWidget = ({ 
-  id, 
-  label, 
-  value, 
-  onChange, 
-  placeholder = '',
-  maxLength = 255,
-  error = '',
-  hint = ''
-}) => {
-  const [focused, setFocused] = useState(false);
-  
-  return (
-    <div className="widget-input-wrapper">
-      <label htmlFor={id} className="widget-label">
-        {label}
-      </label>
-      <div className={`widget-input-container ${focused ? 'focused' : ''} ${error ? 'error' : ''}`}>
-        <input
-          type="text"
-          id={id}
-          name={id}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          maxLength={maxLength}
-          className="widget-input"
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          aria-invalid={!!error}
-        />
-        <span className="widget-char-count">
-          {value.length}/{maxLength}
-        </span>
-      </div>
-      {error && (
-        <span id={`${id}-error`} className="widget-error" role="alert">
-          ✕ {error}
-        </span>
-      )}
-      {hint && !error && (
-        <span id={`${id}-hint`} className="widget-hint">
-          {hint}
-        </span>
-      )}
-    </div>
-  );
-};
-
-/**
- * Custom Date Input Component - Enhanced date widget
- */
-const DateInputWidget = ({ 
-  id, 
-  label, 
-  value, 
-  onChange, 
-  error = '',
-  hint = ''
-}) => {
-  const [focused, setFocused] = useState(false);
-  
-  return (
-    <div className="widget-input-wrapper">
-      <label htmlFor={id} className="widget-label">
-        {label}
-      </label>
-      <div className={`widget-input-container ${focused ? 'focused' : ''} ${error ? 'error' : ''}`}>
-        <input
-          type="date"
-          id={id}
-          name={id}
-          value={value}
-          onChange={onChange}
-          className="widget-input widget-date-input"
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          aria-invalid={!!error}
-        />
-        <span className="widget-date-icon">📅</span>
-      </div>
-      {error && (
-        <span id={`${id}-error`} className="widget-error" role="alert">
-          ✕ {error}
-        </span>
-      )}
-      {hint && !error && (
-        <span id={`${id}-hint`} className="widget-hint">
-          {hint}
-        </span>
-      )}
-    </div>
-  );
-};
-
-/**
- * Custom Checkbox Component - Enhanced toggle widget
- */
-const CheckboxWidget = ({ 
-  id, 
-  label, 
-  checked, 
-  onChange, 
-  hint = ''
-}) => {
-  return (
-    <div className="widget-checkbox-wrapper">
-      <div className="widget-checkbox-container">
-        <input
-          type="checkbox"
-          id={id}
-          name={id}
-          checked={checked}
-          onChange={onChange}
-          className="widget-checkbox"
-          aria-describedby={hint ? `${id}-hint` : undefined}
-        />
-        <label htmlFor={id} className="widget-checkbox-label">
-          {label}
-        </label>
-      </div>
-      {hint && (
-        <span id={`${id}-hint`} className="widget-hint">
-          {hint}
-        </span>
-      )}
-    </div>
-  );
-};
-
-/**
- * Custom Button Component - Enhanced action widget
- */
-const ButtonWidget = ({ 
-  type = 'button', 
-  variant = 'primary', 
-  onClick, 
-  children,
-  disabled = false,
-  icon = null,
-  title = ''
-}) => {
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={`widget-button widget-button-${variant}`}
-      title={title}
-    >
-      {icon && <span className="widget-button-icon">{icon}</span>}
-      <span className="widget-button-text">{children}</span>
-    </button>
-  );
-};
-
-/**
- * Main SearchForm Component using Widgets
+ * Main SearchForm Component using React Widgets
  */
 const SearchForm = ({ onSearch }) => {
   const formRef = useRef(null);
   const [searchCriteria, setSearchCriteria] = useState({
     type: 'any',
-    minPrice: '',
-    maxPrice: '',
-    minBedrooms: '',
-    maxBedrooms: '',
+    minPrice: null,
+    maxPrice: null,
+    minBedrooms: null,
+    maxBedrooms: null,
     postcode: '',
-    dateAddedAfter: '',
-    dateAddedFrom: '',
-    dateAddedTo: '',
+    dateAddedAfter: null,
+    dateAddedFrom: null,
+    dateAddedTo: null,
     dateRangeEnabled: false
   });
 
   const [errors, setErrors] = useState({});
   const [formMessage, setFormMessage] = useState(null);
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    
-    let sanitizedValue = value;
-    if (type === 'text') {
-      sanitizedValue = sanitizeInput(value);
-    }
+  // Property type options for dropdown
+  const propertyTypes = ['any', 'house', 'flat'];
 
+  // Update search criteria with proper handling
+  const updateCriteria = (field, value) => {
     setSearchCriteria(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : sanitizedValue
+      [field]: value
     }));
-
+    
     // Clear error for this field
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
+    setFormMessage(null);
   };
 
   // Validate form
@@ -306,14 +50,14 @@ const SearchForm = ({ onSearch }) => {
 
     // Validate price range
     if (searchCriteria.minPrice && searchCriteria.maxPrice) {
-      if (parseFloat(searchCriteria.minPrice) > parseFloat(searchCriteria.maxPrice)) {
+      if (searchCriteria.minPrice > searchCriteria.maxPrice) {
         newErrors.maxPrice = 'Max price must be greater than min price';
       }
     }
 
     // Validate bedroom range
     if (searchCriteria.minBedrooms && searchCriteria.maxBedrooms) {
-      if (parseInt(searchCriteria.minBedrooms) > parseInt(searchCriteria.maxBedrooms)) {
+      if (searchCriteria.minBedrooms > searchCriteria.maxBedrooms) {
         newErrors.maxBedrooms = 'Max bedrooms must be greater than min bedrooms';
       }
     }
@@ -335,11 +79,27 @@ const SearchForm = ({ onSearch }) => {
     setFormMessage(null);
     
     if (validateForm()) {
-      onSearch(searchCriteria);
+      // Convert criteria for search (handle null values)
+      const searchParams = {
+        type: searchCriteria.type,
+        minPrice: searchCriteria.minPrice || '',
+        maxPrice: searchCriteria.maxPrice || '',
+        minBedrooms: searchCriteria.minBedrooms || '',
+        maxBedrooms: searchCriteria.maxBedrooms || '',
+        postcode: searchCriteria.postcode,
+        dateAddedAfter: searchCriteria.dateAddedAfter || '',
+        dateAddedFrom: searchCriteria.dateAddedFrom || '',
+        dateAddedTo: searchCriteria.dateAddedTo || '',
+        dateRangeEnabled: searchCriteria.dateRangeEnabled
+      };
+
+      onSearch(searchParams);
+      
       setFormMessage({
         type: 'success',
         text: '✓ Search completed successfully'
       });
+      
       // Clear success message after 3 seconds
       setTimeout(() => setFormMessage(null), 3000);
     } else {
@@ -347,9 +107,10 @@ const SearchForm = ({ onSearch }) => {
         type: 'error',
         text: '⚠ Please fix the errors below before searching'
       });
+      
       // Focus on form for accessibility
       if (formRef.current) {
-        formRef.current.focus();
+        formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
   };
@@ -358,14 +119,14 @@ const SearchForm = ({ onSearch }) => {
   const handleReset = () => {
     setSearchCriteria({
       type: 'any',
-      minPrice: '',
-      maxPrice: '',
-      minBedrooms: '',
-      maxBedrooms: '',
+      minPrice: null,
+      maxPrice: null,
+      minBedrooms: null,
+      maxBedrooms: null,
       postcode: '',
-      dateAddedAfter: '',
-      dateAddedFrom: '',
-      dateAddedTo: '',
+      dateAddedAfter: null,
+      dateAddedFrom: null,
+      dateAddedTo: null,
       dateRangeEnabled: false
     });
     setErrors({});
@@ -377,7 +138,7 @@ const SearchForm = ({ onSearch }) => {
     <div className="search-form-container">
       <div className="search-form-header">
         <h1>🏠 Find Your Dream Property</h1>
-        <p className="subtitle">Advanced search with filters</p>
+        <p className="subtitle">Advanced search with powerful filters</p>
       </div>
       
       {formMessage && (
@@ -396,148 +157,204 @@ const SearchForm = ({ onSearch }) => {
         className="search-form"
         noValidate
       >
-        {/* Property Type Widget */}
-        <div className="widget-form-row">
-          <SelectWidget
+        {/* WIDGET 1: Property Type - DropdownList */}
+        <div className="widget-input-wrapper">
+          <label htmlFor="type" className="widget-label">🏘️ Property Type</label>
+          <DropdownList
             id="type"
-            label="Property Type"
+            data={propertyTypes}
             value={searchCriteria.type}
-            onChange={handleChange}
-            options={[
-              { value: 'any', label: 'Any Type' },
-              { value: 'house', label: '🏠 House' },
-              { value: 'flat', label: '🏢 Flat' }
-            ]}
-            hint="Select the property type you're looking for"
+            onChange={(value) => updateCriteria('type', value)}
+            placeholder="Select property type"
+            valueField="value"
+            textField={(item) => {
+              if (item === 'any') return 'Any Type';
+              if (item === 'house') return '🏠 House';
+              if (item === 'flat') return '🏢 Flat';
+              return item;
+            }}
           />
+          <span className="widget-hint">Choose the type of property</span>
         </div>
 
-        {/* Price Range Section */}
+        {/* WIDGET 2-3: Price Range - NumberPicker */}
         <fieldset className="widget-fieldset">
           <legend className="widget-legend">💷 Price Range</legend>
           <div className="widget-form-row">
-            <NumberInputWidget
-              id="minPrice"
-              label="Min Price (£)"
-              value={searchCriteria.minPrice}
-              onChange={handleChange}
-              placeholder="No minimum"
-              min={0}
-              error={errors.minPrice}
-              hint="Minimum property price"
-            />
-            <NumberInputWidget
-              id="maxPrice"
-              label="Max Price (£)"
-              value={searchCriteria.maxPrice}
-              onChange={handleChange}
-              placeholder="No maximum"
-              min={0}
-              error={errors.maxPrice}
-              hint="Maximum property price"
-            />
+            <div className="widget-input-wrapper">
+              <label htmlFor="minPrice" className="widget-label">Min Price (£)</label>
+              <NumberPicker
+                id="minPrice"
+                value={searchCriteria.minPrice}
+                onChange={(value) => updateCriteria('minPrice', value)}
+                min={0}
+                max={10000000}
+                step={10000}
+                placeholder="No minimum"
+                format={{ style: 'currency', currency: 'GBP', minimumFractionDigits: 0 }}
+              />
+              <span className="widget-hint">Leave blank for no minimum</span>
+            </div>
+            
+            <div className="widget-input-wrapper">
+              <label htmlFor="maxPrice" className="widget-label">Max Price (£)</label>
+              <NumberPicker
+                id="maxPrice"
+                value={searchCriteria.maxPrice}
+                onChange={(value) => updateCriteria('maxPrice', value)}
+                min={0}
+                max={10000000}
+                step={10000}
+                placeholder="No maximum"
+                format={{ style: 'currency', currency: 'GBP', minimumFractionDigits: 0 }}
+              />
+              {errors.maxPrice && <span className="widget-error">⚠️ {errors.maxPrice}</span>}
+              <span className="widget-hint">Leave blank for no maximum</span>
+            </div>
           </div>
         </fieldset>
 
-        {/* Bedrooms Section */}
+        {/* WIDGET 4-5: Bedrooms - NumberPicker */}
         <fieldset className="widget-fieldset">
           <legend className="widget-legend">🛏️ Bedrooms</legend>
           <div className="widget-form-row">
-            <NumberInputWidget
-              id="minBedrooms"
-              label="Min Bedrooms"
-              value={searchCriteria.minBedrooms}
-              onChange={handleChange}
-              placeholder="No minimum"
-              min={0}
-              error={errors.minBedrooms}
-              hint="Minimum number of bedrooms"
-            />
-            <NumberInputWidget
-              id="maxBedrooms"
-              label="Max Bedrooms"
-              value={searchCriteria.maxBedrooms}
-              onChange={handleChange}
-              placeholder="No maximum"
-              min={0}
-              error={errors.maxBedrooms}
-              hint="Maximum number of bedrooms"
-            />
+            <div className="widget-input-wrapper">
+              <label htmlFor="minBedrooms" className="widget-label">Min Bedrooms</label>
+              <NumberPicker
+                id="minBedrooms"
+                value={searchCriteria.minBedrooms}
+                onChange={(value) => updateCriteria('minBedrooms', value)}
+                min={0}
+                max={20}
+                step={1}
+                placeholder="No minimum"
+              />
+              <span className="widget-hint">Minimum number of bedrooms</span>
+            </div>
+            
+            <div className="widget-input-wrapper">
+              <label htmlFor="maxBedrooms" className="widget-label">Max Bedrooms</label>
+              <NumberPicker
+                id="maxBedrooms"
+                value={searchCriteria.maxBedrooms}
+                onChange={(value) => updateCriteria('maxBedrooms', value)}
+                min={0}
+                max={20}
+                step={1}
+                placeholder="No maximum"
+              />
+              {errors.maxBedrooms && <span className="widget-error">⚠️ {errors.maxBedrooms}</span>}
+              <span className="widget-hint">Maximum number of bedrooms</span>
+            </div>
           </div>
         </fieldset>
 
-        {/* Postcode Widget */}
-        <TextInputWidget
-          id="postcode"
-          label="📍 Postcode Area"
-          value={searchCriteria.postcode}
-          onChange={handleChange}
-          placeholder="e.g., BR1 or NW1"
-          maxLength={4}
-          error={errors.postcode}
-          hint="First part of UK postcode (e.g., BR1, NW1, SE3)"
-        />
+        {/* WIDGET 6: Postcode - Text Input with validation */}
+        <div className="widget-input-wrapper">
+          <label htmlFor="postcode" className="widget-label">📍 Postcode Area</label>
+          <div className={`widget-input-container ${errors.postcode ? 'error' : ''}`}>
+            <span className="widget-date-icon">📍</span>
+            <input
+              type="text"
+              id="postcode"
+              name="postcode"
+              value={searchCriteria.postcode}
+              onChange={(e) => updateCriteria('postcode', sanitizeInput(e.target.value.toUpperCase()))}
+              placeholder="e.g., BR1, NW1, SW1"
+              className="widget-input"
+              maxLength="4"
+            />
+            <span className="widget-char-count">{searchCriteria.postcode.length}/4</span>
+          </div>
+          {errors.postcode && <span className="widget-error">⚠️ {errors.postcode}</span>}
+          <span className="widget-hint">First part of UK postcode (e.g., BR1, NW1)</span>
+        </div>
 
-        {/* Date Range Toggle */}
+        {/* WIDGET 7: Date Range Toggle - Checkbox */}
         <fieldset className="widget-fieldset">
           <legend className="widget-legend">📅 Date Added</legend>
-          <CheckboxWidget
-            id="dateRangeEnabled"
-            label="Search by date range"
-            checked={searchCriteria.dateRangeEnabled}
-            onChange={handleChange}
-            hint="Check to search between two dates instead of after a single date"
-          />
+          <div className="widget-checkbox-wrapper">
+            <div className="widget-checkbox-container">
+              <input
+                type="checkbox"
+                id="dateRangeEnabled"
+                checked={searchCriteria.dateRangeEnabled}
+                onChange={(e) => updateCriteria('dateRangeEnabled', e.target.checked)}
+                className="widget-checkbox"
+              />
+              <label htmlFor="dateRangeEnabled" className="widget-checkbox-label">
+                Search by date range instead of single date
+              </label>
+            </div>
+          </div>
+
+          {/* WIDGET 8-10: Date Pickers */}
+          {!searchCriteria.dateRangeEnabled ? (
+            <div className="widget-input-wrapper" style={{ marginTop: 'var(--spacing-md)' }}>
+              <label htmlFor="dateAddedAfter" className="widget-label">Added After Date</label>
+              <DatePicker
+                id="dateAddedAfter"
+                value={searchCriteria.dateAddedAfter}
+                onChange={(value) => updateCriteria('dateAddedAfter', value)}
+                placeholder="Select a date"
+                max={new Date()}
+                valueFormat={{ dateStyle: 'medium' }}
+              />
+              <span className="widget-hint">Show properties added on or after this date</span>
+            </div>
+          ) : (
+            <div className="widget-form-row" style={{ marginTop: 'var(--spacing-md)' }}>
+              <div className="widget-input-wrapper">
+                <label htmlFor="dateAddedFrom" className="widget-label">From Date</label>
+                <DatePicker
+                  id="dateAddedFrom"
+                  value={searchCriteria.dateAddedFrom}
+                  onChange={(value) => updateCriteria('dateAddedFrom', value)}
+                  placeholder="Start date"
+                  max={searchCriteria.dateAddedTo || new Date()}
+                  valueFormat={{ dateStyle: 'medium' }}
+                />
+                <span className="widget-hint">Start of date range</span>
+              </div>
+              
+              <div className="widget-input-wrapper">
+                <label htmlFor="dateAddedTo" className="widget-label">To Date</label>
+                <DatePicker
+                  id="dateAddedTo"
+                  value={searchCriteria.dateAddedTo}
+                  onChange={(value) => updateCriteria('dateAddedTo', value)}
+                  placeholder="End date"
+                  min={searchCriteria.dateAddedFrom}
+                  max={new Date()}
+                  valueFormat={{ dateStyle: 'medium' }}
+                />
+                {errors.dateAddedTo && <span className="widget-error">⚠️ {errors.dateAddedTo}</span>}
+                <span className="widget-hint">End of date range</span>
+              </div>
+            </div>
+          )}
         </fieldset>
 
-        {/* Date Input Widgets */}
-        {!searchCriteria.dateRangeEnabled ? (
-          <DateInputWidget
-            id="dateAddedAfter"
-            label="Added After"
-            value={searchCriteria.dateAddedAfter}
-            onChange={handleChange}
-            hint="Find properties added on or after this date"
-          />
-        ) : (
-          <div className="widget-form-row">
-            <DateInputWidget
-              id="dateAddedFrom"
-              label="From Date"
-              value={searchCriteria.dateAddedFrom}
-              onChange={handleChange}
-              hint="Start of date range"
-            />
-            <DateInputWidget
-              id="dateAddedTo"
-              label="To Date"
-              value={searchCriteria.dateAddedTo}
-              onChange={handleChange}
-              error={errors.dateAddedTo}
-              hint="End of date range"
-            />
-          </div>
-        )}
-
-        {/* Action Buttons */}
+        {/* WIDGET 11-12: Action Buttons */}
         <div className="widget-form-actions">
-          <ButtonWidget
+          <button
             type="submit"
-            variant="primary"
-            icon="🔍"
+            className="widget-button widget-button-primary"
             title="Search for properties matching your criteria"
           >
-            Search Properties
-          </ButtonWidget>
-          <ButtonWidget
+            <span className="widget-button-icon">🔍</span>
+            <span className="widget-button-text">Search Properties</span>
+          </button>
+          
+          <button
             type="button"
-            variant="secondary"
+            className="widget-button widget-button-secondary"
             onClick={handleReset}
-            icon="✕"
             title="Clear all search filters"
           >
-            Clear Filters
-          </ButtonWidget>
+            <span className="widget-button-icon">🔄</span>
+            <span className="widget-button-text">Clear Filters</span>
+          </button>
         </div>
       </form>
     </div>
