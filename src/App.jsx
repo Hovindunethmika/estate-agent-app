@@ -1,33 +1,3 @@
-/**
- * Estate Agent Application - Main Component
- * 
- * This is the root component that manages the entire estate agent application.
- * It handles:
- * - Loading property data from JSON file (client-side only)
- * - Managing search criteria and filtered results
- * - Maintaining favorites list
- * - Handling sorting of properties
- * - Displaying property details in modal
- * 
- * State Management:
- * - allProperties: Complete list of properties loaded from properties.json
- * - filteredProperties: Results matching current search criteria
- * - favourites: User's saved favorite properties
- * - sortBy: Current sorting method
- * - isLoading: Loading state indicator
- * - error: Error messages
- * - selectedPropertyId: Currently viewed property in modal
- * 
- * Architecture:
- * - Client-side only (no server required)
- * - React hooks for state management
- * - Composition pattern with child components
- * - Secure data handling with encoding utilities
- * 
- * @component
- * @returns {JSX.Element} The main application interface
- */
-
 import React, { useState, useEffect } from 'react';
 import SearchForm from './components/SearchForm';
 import PropertyList from './components/PropertyList';
@@ -37,7 +7,7 @@ import { filterProperties, sortProperties } from './utils/searchUtils';
 import './App.css';
 
 const App = () => {
-  // State for managing application data
+  // Application state
   const [allProperties, setAllProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
   const [favourites, setFavourites] = useState([]);
@@ -46,15 +16,7 @@ const App = () => {
   const [error, setError] = useState(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
 
-  /**
-   * Load all properties from the local properties.json file on component mount.
-   * This runs entirely client-side with no server interaction required.
-   * 
-   * Error handling:
-   * - Validates HTTP response status
-   * - Provides user-friendly error messages
-   * - Logs detailed errors to console
-   */
+  // Load properties on mount
   useEffect(() => {
     const loadProperties = async () => {
       try {
@@ -78,27 +40,11 @@ const App = () => {
     loadProperties();
   }, []);
 
-  /**
-   * Handle search form submission by filtering properties
-   * 
-   * Process:
-   * 1. Apply search criteria filters (location, price, bedrooms, postcode, date)
-   * 2. Apply current sort order if selected
-   * 3. Update filtered results
-   * 
-   * @param {Object} searchCriteria - Search criteria object with properties:
-   *   - location: Location search string
-   *   - minPrice: Minimum price filter
-   *   - maxPrice: Maximum price filter
-   *   - bedrooms: Bedroom count filter
-   *   - postcode: Postcode filter
-   *   - dateAdded: Date listing filter
-   */
+  // Handle search with filters and sorting
   const handleSearch = (searchCriteria) => {
     try {
       let filtered = filterProperties(allProperties, searchCriteria);
       
-      // Apply sorting if selected
       if (sortBy) {
         filtered = sortProperties(filtered, sortBy);
       }
@@ -110,13 +56,7 @@ const App = () => {
     }
   };
 
-  /**
-   * Handle sort dropdown change
-   * 
-   * Updates the sort order and re-sorts the filtered results
-   * 
-   * @param {Event} e - The change event from the sort select element
-   */
+  // Handle sort change
   const handleSort = (e) => {
     const sort = e.target.value;
     setSortBy(sort);
@@ -128,34 +68,22 @@ const App = () => {
     setFilteredProperties(sorted);
   };
 
-  /**
-   * Add a property to the favorites list
-   * Prevents duplicate entries using property ID comparison
-   * 
-   * @param {Object} property - The property object to add to favorites
-   */
+  // Add to favorites (prevent duplicates)
   const handleAddToFavourites = (property) => {
     setFavourites(prevFavourites => {
-      // Check if property already exists
       if (prevFavourites.some(fav => fav.id === property.id)) {
-        return prevFavourites; // No change if already exists
+        return prevFavourites;
       }
       return [...prevFavourites, property];
     });
   };
 
-  /**
-   * Remove a property from the favorites list
-   * 
-   * @param {string} propertyId - The ID of the property to remove
-   */
+  // Remove from favorites
   const handleRemoveFromFavourites = (propertyId) => {
     setFavourites(favourites.filter(fav => fav.id !== propertyId));
   };
 
-  /**
-   * Clear all properties from the favorites list
-   */
+  // Clear all favorites
   const handleClearFavourites = () => {
     setFavourites([]);
   };
@@ -182,18 +110,12 @@ const App = () => {
     handleRemoveFromFavourites(propertyId);
   };
 
-  /**
-   * Open property details modal
-   * 
-   * @param {string} propertyId - The ID of the property to view
-   */
+  // Open property details modal
   const handleViewPropertyDetails = (propertyId) => {
     setSelectedPropertyId(propertyId);
   };
 
-  /**
-   * Close property details modal
-   */
+  // Close property details modal
   const handleClosePropertyDetails = () => {
     setSelectedPropertyId(null);
   };
@@ -230,36 +152,38 @@ const App = () => {
 
           {/* Main Content Area */}
           {!isLoading && (
-            <div className="results-container">
-              <section className="properties-section" aria-labelledby="results-heading">
-                <div className="section-header">
-                  <h2 id="results-heading" className="section-heading">Search Results</h2>
-                  {filteredProperties.length > 0 && (
-                    <div className="sort-controls">
-                      <label htmlFor="sort-select">Sort by:</label>
-                      <select 
-                        id="sort-select"
-                        value={sortBy} 
-                        onChange={handleSort}
-                        className="sort-select"
-                      >
-                        <option value="">Default</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                        <option value="date-newest">Newest First</option>
-                        <option value="date-oldest">Oldest First</option>
-                      </select>
-                    </div>
-                  )}
-                </div>
-                <PropertyList 
-                  properties={filteredProperties}
-                  onAddToFavourites={handleAddToFavourites}
-                  onViewDetails={handleViewPropertyDetails}
-                  favourites={favourites}
-                  onRemoveFromFavourites={handleRemoveFromFavourites}
-                />
-              </section>
+            <>
+              <div className="results-container">
+                <section className="properties-section" aria-labelledby="results-heading">
+                  <div className="section-header">
+                    <h2 id="results-heading" className="section-heading">Search Results</h2>
+                    {filteredProperties.length > 0 && (
+                      <div className="sort-controls">
+                        <label htmlFor="sort-select">Sort by:</label>
+                        <select 
+                          id="sort-select"
+                          value={sortBy} 
+                          onChange={handleSort}
+                          className="sort-select"
+                        >
+                          <option value="">Default</option>
+                          <option value="price-asc">Price: Low to High</option>
+                          <option value="price-desc">Price: High to Low</option>
+                          <option value="date-newest">Newest First</option>
+                          <option value="date-oldest">Oldest First</option>
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                  <PropertyList 
+                    properties={filteredProperties}
+                    onAddToFavourites={handleAddToFavourites}
+                    onViewDetails={handleViewPropertyDetails}
+                    favourites={favourites}
+                    onRemoveFromFavourites={handleRemoveFromFavourites}
+                  />
+                </section>
+              </div>
 
               <aside className="favourites-section" aria-labelledby="favourites-heading">
                 <h2 id="favourites-heading" className="section-heading">Saved Favourites</h2>
@@ -271,7 +195,7 @@ const App = () => {
                   onDragOutRemove={handleDragOutRemoveFromFavourites}
                 />
               </aside>
-            </div>
+            </>
           )}
         </div>
       </main>

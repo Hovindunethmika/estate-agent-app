@@ -1,66 +1,15 @@
-/**
- * PropertyDetails Component
- * 
- * Modal dialog displaying comprehensive property information including:
- * - Full property description and details
- * - Image gallery with navigation controls
- * - Fullscreen image viewing capability
- * - Price information and tenure details
- * - Location and postcode information
- * - Property type and bedroom count
- * 
- * Features:
- * - Image gallery with previous/next navigation (arrow buttons)
- * - Image navigation by keyboard arrows (left/right)
- * - Escape key to close modal
- * - Fullscreen image view for closer inspection
- * - Loading state during data fetch
- * - Error handling for failed property loads
- * - Security: HTML encoding to prevent XSS attacks
- * 
- * Props:
- * - propertyId (string): ID of property to display
- * - onClose (Function): Callback when modal should close (Escape or X button)
- * 
- * Data Flow:
- * - Loads property data from properties.json on component mount
- * - Matches propertyId with properties array
- * - Displays full property details in modal format
- * 
- * Keyboard Controls:
- * - Arrow Left: Previous image
- * - Arrow Right: Next image
- * - Escape: Close modal
- * 
- * @component
- * @example
- * const [selectedId, setSelectedId] = useState(null);
- * <PropertyDetails 
- *   propertyId={selectedId} 
- *   onClose={() => setSelectedId(null)}
- * />
- */
-
 import React, { useState, useEffect } from 'react';
 import { encodeHTML } from '../utils/securityUtils';
 
 const PropertyDetails = ({ propertyId, onClose }) => {
-  // Property data fetched from properties.json
+  // State for property data, loading, and error
   const [property, setProperty] = useState(null);
-  // Loading state during async fetch
   const [loading, setLoading] = useState(true);
-  // Error message if fetch fails
   const [error, setError] = useState(null);
-  // Current index in image gallery (0-based)
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  // Track if image is displayed in fullscreen mode
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  /**
-   * Fetches property data from JSON file when component mounts
-   * or when propertyId changes
-   * Sets loading state and handles errors appropriately
-   */
+  // Fetch property details on mount
   useEffect(() => {
     const fetchProperty = async () => {
       try {
