@@ -1,50 +1,12 @@
-/**
- * PropertyCard Component
- * 
- * Displays individual property information in a card format for both the main list
- * and favorites list. Features include:
- * - Property image, price, bedrooms, location display
- * - Favorite button with heart icon (❤️/🤍)
- * - View details button to open modal with full information
- * - Drag and drop support for adding to favorites
- * - Expandable description section
- * - Price per bedroom calculation
- * - Security: Uses HTML encoding to prevent XSS attacks
- * 
- * Props:
- * - property (Object): Property data object with id, type, price, bedrooms, etc.
- * - onAddToFavourites (Function): Callback when favorite button clicked
- * - onViewDetails (Function): Callback when view details button clicked
- * - onDragStart (Function): Callback for drag start event
- * - isDraggable (Boolean): Whether card can be dragged (default: true)
- * - isFavourited (Boolean): Whether property is already favorited (default: false)
- * - onRemoveFromFavourites (Function): Callback to remove from favorites
- * 
- * @component
- * @example
- * const handleAddFav = (propId) => { ... };
- * const handleView = (propId) => { ... };
- * <PropertyCard 
- *   property={property}
- *   onAddToFavourites={handleAddFav}
- *   onViewDetails={handleView}
- *   isFavourited={true}
- * />
- */
-
 import React, { useState } from 'react';
 import { encodeHTML } from '../utils/securityUtils';
 
 const PropertyCard = ({ property, onAddToFavourites, onViewDetails, onDragStart, isDraggable = true, isFavourited = false, onRemoveFromFavourites = null }) => {
-  // Track whether card is currently being dragged (for visual feedback)
+  // Track expanded description and drag state
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  /**
-   * Formats a price value as UK currency (GBP)
-   * @param {number} price - Price in pounds
-   * @returns {string} - Formatted price string (e.g., "£450,000")
-   */
+  // Format price as GBP currency
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-GB', {
       style: 'currency',
@@ -53,13 +15,7 @@ const PropertyCard = ({ property, onAddToFavourites, onViewDetails, onDragStart,
     }).format(price);
   };
 
-  /**
-   * Calculates and formats price per bedroom
-   * Useful for comparing properties with different numbers of bedrooms
-   * @param {number} price - Total price in pounds
-   * @param {number} bedrooms - Number of bedrooms
-   * @returns {string} - Formatted price per bedroom or 'N/A' if no bedrooms
-   */
+  // Calculate price per bedroom
   const formatPricePerBedroom = (price, bedrooms) => {
     if (bedrooms === 0) return 'N/A';
     return new Intl.NumberFormat('en-GB', {
@@ -69,12 +25,7 @@ const PropertyCard = ({ property, onAddToFavourites, onViewDetails, onDragStart,
     }).format(price / bedrooms);
   };
 
-  /**
-   * Handles drag start for drag-and-drop to favorites list
-   * Sets the property ID in the dataTransfer object for the drop target
-   * Provides visual feedback that the card is being dragged
-   * @param {DragEvent} e - The drag event object
-   */
+  // Handle drag start for favorites
   const handleDragStart = (e) => {
     setIsDragging(true);
     if (onDragStart) {

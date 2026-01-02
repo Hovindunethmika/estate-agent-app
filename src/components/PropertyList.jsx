@@ -1,63 +1,17 @@
-/**
- * PropertyList Component
- * 
- * Displays properties matching search criteria in a grid or list view.
- * Manages both the display of filtered results and the sorting functionality.
- * 
- * Features:
- * - Grid view (default) or list view toggle
- * - Multiple sort options:
- *   * Default (original order)
- *   * Price ascending (lowest first)
- *   * Price descending (highest first)
- *   * Date newest (most recent first)
- *   * Date oldest (oldest first)
- * - Shows total count of properties displayed
- * - Displays individual PropertyCard components for each property
- * - Maintains favorites state across all properties
- * - Responsive design for mobile, tablet, and desktop
- * 
- * Props:
- * - properties (Array): Array of property objects to display
- * - onAddToFavourites (Function): Callback when favorite button clicked
- * - onViewDetails (Function): Callback when view details button clicked
- * - favourites (Array): Array of properties currently favorited (default: [])
- * - onRemoveFromFavourites (Function): Callback to remove from favorites
- * 
- * @component
- * @example
- * <PropertyList 
- *   properties={filtered}
- *   onAddToFavourites={handleAddFav}
- *   onViewDetails={handleViewDetails}
- *   favourites={favorites}
- * />
- */
-
 import React, { useState } from 'react';
 import PropertyCard from './PropertyCard';
 
 const PropertyList = ({ properties, onAddToFavourites, onViewDetails, favourites = [], onRemoveFromFavourites = null }) => {
-  // Track current view mode (grid or list) for display toggle
+  // Track view mode and sort option
   const [sortBy, setSortBy] = useState('default');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
 
-  /**
-   * Checks if a property is currently in the favorites list
-   * Used to display the correct heart icon state (filled or empty)
-   * @param {string} propertyId - The property ID to check
-   * @returns {boolean} - True if property is favorited, false otherwise
-   */
+  // Check if property is favorited
   const isFavourited = (propertyId) => {
     return favourites.some(fav => fav.id === propertyId);
   };
 
-  /**
-   * Sorts properties based on selected sort criterion
-   * Maintains original array, returns new sorted copy
-   * Supports: price ascending, price descending, date newest, date oldest
-   * @returns {Array} - Sorted array of properties
-   */
+  // Get sorted properties based on selected option
   const getSortedProperties = () => {
     const sorted = [...(properties || [])];
     

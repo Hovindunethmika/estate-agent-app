@@ -1,57 +1,7 @@
-/**
- * SearchForm Component
- * 
- * Main search interface for filtering properties by multiple criteria:
- * - Property type (House, Flat, or Any)
- * - Price range (minimum and maximum price)
- * - Bedroom count range (minimum and maximum)
- * - Postcode area (e.g., BR5, SW1, etc.)
- * - Date added filters (optional date range)
- * 
- * Features:
- * - Custom widget components for consistent UI (SelectWidget, TextInputWidget, DateWidget)
- * - Real-time search updates with form submission
- * - Input validation and sanitization for security
- * - Postcode validation using regex pattern
- * - Reset button to clear all search criteria
- * - Responsive design that works on all screen sizes
- * 
- * Architecture:
- * - Each search criterion is independent but combined with AND logic in filterProperties()
- * - Input validation prevents invalid searches (e.g., minPrice > maxPrice)
- * - All user inputs are sanitized to prevent XSS attacks
- * - Postcode validation ensures proper UK postcode format
- * 
- * Props:
- * - onSearch (Function): Callback with search criteria when form is submitted
- * 
- * @component
- * @example
- * const handleSearch = (criteria) => {
- *   console.log('Searching with:', criteria);
- *   filterAndDisplay(criteria);
- * };
- * <SearchForm onSearch={handleSearch} />
- */
-
 import React, { useState, useRef } from 'react';
 import { sanitizeInput, validatePostcode } from '../utils/securityUtils';
 
-/**
- * SelectWidget Component
- * 
- * Custom dropdown select component with consistent styling and behavior.
- * Used for property type selection (House, Flat, Any).
- * 
- * Props:
- * - id (string): HTML id attribute for accessibility
- * - label (string): Display label for the field
- * - value (string): Current selected value
- * - onChange (Function): Callback when selection changes
- * - options (Array): Array of option objects with value and label
- * - disabled (Boolean): Whether field is disabled (default: false)
- * - hint (string): Optional helper text below the field
- */
+// Custom dropdown select component
 const SelectWidget = ({ 
   id, 
   label, 
@@ -147,9 +97,7 @@ const NumberInputWidget = ({
   );
 };
 
-/**
- * Custom Text Input Component - Enhanced text widget
- */
+// Custom text input component
 const TextInputWidget = ({ 
   id, 
   label, 

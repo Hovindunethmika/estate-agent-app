@@ -1,61 +1,13 @@
-/**
- * FavouritesList Component
- * 
- * Sidebar component displaying user's favorite properties. Provides
- * multiple ways to manage favorites:
- * - Display list of saved favorite properties
- * - Drag and drop properties from search results to add
- * - Drag out of list to remove (drag-out functionality)
- * - Delete button (✕) to remove individual properties
- * - Clear All button to remove all favorites at once
- * 
- * Features:
- * - Drag-and-drop to add properties (drop target)
- * - Drag-out to remove properties (drag source)
- * - Visual feedback on drag over (highlight)
- * - Price display for each property
- * - Property count display
- * - Click handler support (if needed for future features)
- * - Responsive design
- * 
- * Props:
- * - favourites (Array): Array of favorite property objects
- * - onRemove (Function): Callback(propertyId) when property is deleted
- * - onClear (Function): Callback when Clear All button clicked
- * - onDrop (Function): Callback(event) when property dropped in favorites
- * - onDragOver (Function): Callback(event) for drag over visual feedback
- * - onDragOutRemove (Function): Optional callback for drag-out removal
- * 
- * Security:
- * - Uses encodeHTML to prevent XSS when displaying property data
- * - Input validation on all callbacks
- * 
- * @component
- * @example
- * const handleRemove = (propId) => { ... };
- * const handleDrop = (e) => { ... };
- * <FavouritesList 
- *   favourites={favList}
- *   onRemove={handleRemove}
- *   onDrop={handleDrop}
- * />
- */
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { encodeHTML } from '../utils/securityUtils';
 
 const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOver, onDragOutRemove = null }) => {
-  // Track drag-over state for visual feedback on drop target
+  // Track drag state and which item is being dragged
   const [isDragOver, setIsDragOver] = useState(false);
-  // Track which item is being dragged for drag-out-to-remove
   const [draggedItemId, setDraggedItemId] = useState(null);
   
-  /**
-   * Formats a price value as UK currency (GBP)
-   * @param {number} price - Price in pounds
-   * @returns {string} - Formatted price string (e.g., "£450,000")
-   */
+  // Format price as GBP currency
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-GB', {
       style: 'currency',
@@ -64,11 +16,7 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOver, onD
     }).format(price);
   };
 
-  /**
-   * Handles drag over event for drop target highlighting
-   * Prevents default to enable drop, sets visual feedback
-   * @param {DragEvent} e - The drag event object
-   */
+  // Handle drag over for drop target
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
