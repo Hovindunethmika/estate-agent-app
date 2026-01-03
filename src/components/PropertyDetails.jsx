@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
+import { Heart } from 'lucide-react';
 import { encodeHTML } from '../utils/securityUtils';
+import PropertyGallery from './PropertyGallery';
+import PropertyTabs from './PropertyTabs';
 
 const PropertyDetails = ({ property = null, propertyId = null, onClose = null, onAddToFavourites = null, onRemoveFromFavourites = null, isFavourite = false }) => {
   // State for property data, loading, and error
   const [propertyData, setPropertyData] = useState(property);
   const [loading, setLoading] = useState(property ? false : true);
   const [error, setError] = useState(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFav, setIsFav] = useState(isFavourite);
 
   // Fetch property details on mount if propertyId is provided
@@ -21,31 +20,6 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
     }
 
     if (!propertyId) return;
-
-    const fetchProperty = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/properties.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch property details');
-        }
-        const data = await response.json();
-        const found = data.properties.find(p => p.id === propertyId);
-        if (found) {
-          setPropertyData(found);
-          setCurrentImageIndex(0);
-        } else {
-          setError('Property not found');
-        }
-      } catch (err) {
-        setError(err.message || 'Failed to load property details');
-        console.error('Error loading property details:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProperty();
   }, [propertyId, property, isFavourite]);
 
   const formatPrice = (price) => {
@@ -65,31 +39,21 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
     }).format(price / bedrooms);
   };
 
-  const handleNextImage = (e) => {
+  const handleAddToFavourites = (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    if (propertyData && propertyData.images) {
-      setCurrentImageIndex((prev) => (prev + 1) % propertyData.images.length);
+    if (isFav && onRemoveFromFavourites) {
+      onRemoveFromFavourites(propertyData.id);
+      setIsFav(false);
+    } else if (!isFav && onAddToFavourites) {
+      onAddToFavourites(propertyData);
+      setIsFav(true);
     }
-  };
-
-  const handlePrevImage = (e) => {
-    e.stopPropagation();
-    if (propertyData && propertyData.images) {
-      setCurrentImageIndex((prev) => (prev - 1 + propertyData.images.length) % propertyData.images.length);
-    }
-  };
-
-  const handleThumbnailClick = (index) => {
-    setCurrentImageIndex(index);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'ArrowRight') handleNextImage(e);
-    if (e.key === 'ArrowLeft') handlePrevImage(e);
     if (e.key === 'Escape') {
-      if (isFullscreen) {
-        setIsFullscreen(false);
-      } else if (onClose) {
+      if (onClose) {
         onClose();
       }
     }
@@ -100,7 +64,7 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     }
-  }, [propertyData, isFullscreen]);
+  }, [propertyData]);
 
   if (loading) {
     return (
@@ -139,76 +103,9 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
   const renderPropertyContent = () => (
     <>
       {/* Large Image Gallery */}
-      {currentImage && (
+      {propertyData.images && propertyData.images.length > 0 && (
         <section className="property-gallery-section" aria-label="Property images gallery">
-          <div className="main-image-container">
-            <button
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="fullscreen-btn"
-              title="Toggle fullscreen"
-              aria-label="Toggle fullscreen view"
-            >
-              {isFullscreen ? '⛶' : '⛶'}
-            </button>
-            
-            <img
-              src={currentImage}
-              alt={`${encodeHTML(propertyData.location)} - Image ${currentImageIndex + 1} of ${propertyData.images.length}`}
-              className="main-property-image"
-            />
-
-            {/* Navigation Buttons */}
-            {propertyData.images.length > 1 && (
-              <>
-                <button
-                  onClick={handlePrevImage}
-                  className="gallery-nav-btn prev"
-                  aria-label="Previous image"
-                  title="Previous image"
-                >
-                  ◀
-                </button>
-                <button
-                  onClick={handleNextImage}
-                  className="gallery-nav-btn next"
-                  aria-label="Next image"
-                  title="Next image"
-                >
-                  ▶
-                </button>
-              </>
-            )}
-
-            {/* Image Counter */}
-            {propertyData.images.length > 1 && (
-              <div className="image-counter">
-                {currentImageIndex + 1} / {propertyData.images.length}
-              </div>
-            )}
-          </div>
-
-          {/* Thumbnail Gallery */}
-          {propertyData.images.length > 1 && (
-            <div className="thumbnail-gallery">
-              {propertyData.images.map((image, index) => (
-                <button
-                  key={index}
-                  className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                  onClick={() => handleThumbnailClick(index)}
-                  aria-label={`View image ${index + 1}`}
-                  title={`Image ${index + 1}`}
-                >
-                  <img src={image} alt={`Thumbnail ${index + 1}`} />
-                </button>
-              ))}
-            </div>
-          )}
-
-          {propertyData.images.length > 1 && (
-            <p className="gallery-hints">
-              💡 Tip: Use arrow keys (← →) or click thumbnails to navigate
-            </p>
-          )}
+          <PropertyGallery images={propertyData.images} title={propertyData.location} />
         </section>
       )}
 
@@ -232,83 +129,15 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
             <span className="key-info-value">{propertyData.bedrooms}</span>
           </div>
           <div className="key-info-item">
-            <span className="key-info-label">Tenure</span>
-            <span className="key-info-value">{encodeHTML(propertyData.tenure)}</span>
+            <span className="key-info-label">Type</span>
+            <span className="key-info-value">{encodeHTML(propertyData.type || 'N/A')}</span>
           </div>
         </div>
       </section>
 
       {/* Tabs Section */}
       <section className="property-tabs-section">
-        <Tabs>
-          <TabList>
-            <Tab>Description</Tab>
-            <Tab>Floor Plan</Tab>
-            <Tab>Location</Tab>
-          </TabList>
-
-          {/* Description Tab */}
-          <TabPanel>
-            <div className="tab-content">
-              <h3>Property Description</h3>
-              <p className="description-text">{encodeHTML(propertyData.description)}</p>
-              {propertyData.url && (
-                <p className="url-text">
-                  <strong>Property Reference:</strong> <code>{encodeHTML(propertyData.url)}</code>
-                </p>
-              )}
-            </div>
-          </TabPanel>
-
-          {/* Floor Plan Tab */}
-          <TabPanel>
-            <div className="tab-content">
-              <h3>Floor Plan</h3>
-              <div className="floor-plan-container">
-                {propertyData.images && propertyData.images.length > 0 ? (
-                  <>
-                    <img 
-                      src={propertyData.images[0]} 
-                      alt="Floor plan" 
-                      className="floor-plan-image"
-                    />
-                    <p className="floor-plan-note">
-                      Property image showing layout and features. Bedrooms: {propertyData.bedrooms}
-                    </p>
-                  </>
-                ) : (
-                  <p>No floor plan available</p>
-                )}
-              </div>
-            </div>
-          </TabPanel>
-
-          {/* Google Map Tab */}
-          <TabPanel>
-            <div className="tab-content">
-              <h3>Location Map</h3>
-              <div className="map-container">
-                <iframe
-                  className="google-map"
-                  title={`Google Map for ${encodeHTML(propertyData.location)}`}
-                  loading="lazy"
-                  src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDummyKeyForDemo&q=${encodeURIComponent(propertyData.location + ', ' + propertyData.postcode)}`}
-                  style={{
-                    border: 0,
-                    width: '100%',
-                    height: '500px',
-                    borderRadius: '8px'
-                  }}
-                  allowFullScreen=""
-                  aria-label="Google Map showing property location"
-                ></iframe>
-                <p className="map-note">
-                  Map showing {encodeHTML(propertyData.location)}, {encodeHTML(propertyData.postcode)}
-                </p>
-              </div>
-            </div>
-          </TabPanel>
-        </Tabs>
+        <PropertyTabs property={propertyData} />
       </section>
     </>
   );
@@ -329,13 +158,29 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
                 <strong>{encodeHTML(propertyData.postcode)}</strong>
               </p>
             </div>
-            <button 
-              onClick={onClose} 
-              className="modal-close" 
-              aria-label="Close property details"
-            >
-              ✕
-            </button>
+            <div className="header-buttons">
+              <button 
+                onClick={handleAddToFavourites}
+                className="heart-button"
+                aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
+                title={isFav ? 'Remove from favourites' : 'Add to favourites'}
+              >
+                <Heart
+                  className={`w-6 h-6 ${
+                    isFav
+                      ? 'fill-red-500 text-red-500'
+                      : 'text-slate-400'
+                  }`}
+                />
+              </button>
+              <button 
+                onClick={onClose} 
+                className="modal-close" 
+                aria-label="Close property details"
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
           {/* Modal Body */}
@@ -367,6 +212,20 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
             <strong>{encodeHTML(propertyData.postcode)}</strong>
           </p>
         </div>
+        <button 
+          onClick={handleAddToFavourites}
+          className="heart-button-page"
+          aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
+          title={isFav ? 'Remove from favourites' : 'Add to favourites'}
+        >
+          <Heart
+            className={`w-6 h-6 ${
+              isFav
+                ? 'fill-red-500 text-red-500'
+                : 'text-slate-400'
+            }`}
+          />
+        </button>
       </div>
 
       {/* Page Body */}

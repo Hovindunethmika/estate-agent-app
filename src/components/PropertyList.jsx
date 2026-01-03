@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { Search } from 'lucide-react';
 import PropertyCard from './PropertyCard';
 
 const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStart, favourites = [], onRemoveFromFavourites = null }) => {
-  // Track view mode and sort option
   const [sortBy, setSortBy] = useState('default');
-  const [viewMode, setViewMode] = useState('grid');
 
   // Check if property is favorited
   const isFavourited = (propertyId) => {
@@ -12,7 +11,7 @@ const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStar
   };
 
   // Get sorted properties based on selected option
-  const getSortedProperties = () => {
+  const sortedProperties = useMemo(() => {
     const sorted = [...(properties || [])];
     
     switch(sortBy) {
@@ -23,93 +22,62 @@ const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStar
       case 'bedrooms':
         return sorted.sort((a, b) => b.bedrooms - a.bedrooms);
       case 'newest':
-        return sorted.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+        return sorted.sort((a, b) => new Date(b.date_added) - new Date(a.date_added));
       default:
         return sorted;
     }
-  };
-
-  const sortedProperties = getSortedProperties();
+  }, [properties, sortBy]);
 
   if (!sortedProperties || sortedProperties.length === 0) {
     return (
-      <div className="no-results-container">
-        <div className="no-results">
-          <div className="no-results-icon">🔍</div>
-          <h3>No properties found</h3>
-          <p>We couldn't find any properties matching your search criteria.</p>
-          <p className="no-results-hint">Try adjusting your filters for better results:</p>
-          <ul className="no-results-suggestions">
-            <li>Increase your price range</li>
-            <li>Reduce the number of bedrooms</li>
-            <li>Try a different postcode area</li>
-            <li>Adjust the date range</li>
-          </ul>
-        </div>
+      <div className="bg-white rounded-xl shadow-md p-12 text-center">
+        <Search className="w-16 h-16 mx-auto text-slate-300 mb-4" />
+        <h3 className="text-xl font-semibold text-slate-700 mb-2">No properties found</h3>
+        <p className="text-slate-500">
+          Try adjusting your search criteria to see more results
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="property-list-container">
+    <div className="space-y-6">
       {/* Results Header */}
-      <div className="property-list-header">
-        <div className="property-list-title">
-          <h2>
-            <span className="results-count-badge">{sortedProperties.length}</span>
-            Properties Found
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-1">
+            {sortedProperties.length === properties.length 
+              ? 'All Properties' 
+              : `Found ${sortedProperties.length} ${sortedProperties.length === 1 ? 'Property' : 'Properties'}`}
           </h2>
-          <p className="results-subtitle">
-            {sortedProperties.length === 1 
-              ? 'One property matches your criteria' 
-              : `${sortedProperties.length} properties match your criteria`}
+          <p className="text-slate-600">
+            Showing {sortedProperties.length} of {properties.length} properties
           </p>
         </div>
 
-        {/* Controls */}
-        <div className="property-list-controls">
-          {/* Sort Dropdown */}
-          <div className="sort-control-wrapper">
-            <label htmlFor="sort-select">Sort by:</label>
-            <select
-              id="sort-select"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="sort-select-enhanced"
-              aria-label="Sort properties"
-            >
-              <option value="default">Most Relevant</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="bedrooms">Most Bedrooms</option>
-              <option value="newest">Recently Added</option>
-            </select>
-          </div>
-
-          {/* View Toggle */}
-          <div className="view-toggle-wrapper">
-            <button
-              className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-              aria-label="Grid view"
-              title="Grid view"
-            >
-              ⊞ Grid
-            </button>
-            <button
-              className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-              onClick={() => setViewMode('list')}
-              aria-label="List view"
-              title="List view"
-            >
-              ≡ List
-            </button>
-          </div>
+        {/* Sort Dropdown */}
+        <div className="flex items-center gap-3">
+          <label htmlFor="sort-select" className="text-sm font-medium text-slate-700">
+            Sort by:
+          </label>
+          <select
+            id="sort-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
+            aria-label="Sort properties"
+          >
+            <option value="default">Most Relevant</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="bedrooms">Most Bedrooms</option>
+            <option value="newest">Recently Added</option>
+          </select>
         </div>
       </div>
 
-      {/* Properties Grid/List */}
-      <div className={`properties-display ${viewMode}`}>
+      {/* Properties Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedProperties.map(property => (
           <PropertyCard 
             key={property.id} 
@@ -122,13 +90,6 @@ const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStar
             onRemoveFromFavourites={onRemoveFromFavourites}
           />
         ))}
-      </div>
-
-      {/* Results Footer */}
-      <div className="property-list-footer">
-        <p className="results-footer-text">
-          Showing {sortedProperties.length} of {sortedProperties.length} properties
-        </p>
       </div>
     </div>
   );

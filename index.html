@@ -2,40 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Security Headers -->
-    <!-- Strict Content Security Policy to prevent XSS, injection, and clickjacking attacks -->
-    <meta http-equiv="Content-Security-Policy" 
-          content="default-src 'self'; 
-                   script-src 'self'; 
-                   style-src 'self' 'unsafe-inline'; 
-                   img-src 'self' data:; 
-                   font-src 'self' data:;
-                   connect-src 'self';
-                   frame-ancestors 'none';
-                   base-uri 'self';
-                   form-action 'self';
-                   upgrade-insecure-requests;">
-    
-    <!-- Prevent clickjacking attacks -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
-    
-    <!-- Prevent MIME type sniffing -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    
-    <!-- Enable XSS protection in older browsers -->
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
-    
-    <!-- Referrer policy for privacy -->
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
-    
-    <!-- Permissions policy (formerly feature policy) -->
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
-    
-    <title>Estate Agent - Property Search</title>
+    <title>PropertyFinder - Estate Agent</title>
   </head>
   <body>
     <div id="root"></div>

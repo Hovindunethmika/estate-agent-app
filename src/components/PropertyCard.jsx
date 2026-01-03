@@ -1,29 +1,11 @@
 import React, { useState } from 'react';
+import { Heart, Bed, MapPin } from 'lucide-react';
 import { encodeHTML } from '../utils/securityUtils';
+import { useNavigate } from 'react-router-dom';
 
-const PropertyCard = ({ property, onAddToFavourites, onViewDetails, onDragStart, isDraggable = true, isFavourited = false, onRemoveFromFavourites = null }) => {
-  // Track expanded description and drag state
-  const [showFullDescription, setShowFullDescription] = useState(false);
+const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = true, isFavourited = false, onRemoveFromFavourites = null }) => {
   const [isDragging, setIsDragging] = useState(false);
-
-  // Format price as GBP currency
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'GBP',
-      maximumFractionDigits: 0
-    }).format(price);
-  };
-
-  // Calculate price per bedroom
-  const formatPricePerBedroom = (price, bedrooms) => {
-    if (bedrooms === 0) return 'N/A';
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'GBP',
-      maximumFractionDigits: 0
-    }).format(price / bedrooms);
-  };
+  const navigate = useNavigate();
 
   // Handle drag start for favorites
   const handleDragStart = (e) => {
@@ -49,147 +31,224 @@ const PropertyCard = ({ property, onAddToFavourites, onViewDetails, onDragStart,
     }
   };
 
-  const getDaysListed = () => {
-    const today = new Date();
-    const added = new Date(property.dateAdded);
-    const days = Math.floor((today - added) / (1000 * 60 * 60 * 24));
-    
-    if (days === 0) return 'Today';
-    if (days === 1) return '1 day ago';
-    if (days < 7) return `${days} days ago`;
-    if (days < 30) return `${Math.floor(days / 7)}w ago`;
-    if (days < 365) return `${Math.floor(days / 30)}m ago`;
-    return `${Math.floor(days / 365)}y ago`;
+  const getImageSource = () => {
+    if (property.images && property.images.length > 0) {
+      return property.images[0];
+    }
+    return 'https://via.placeholder.com/800x600?text=No+Image';
   };
 
-  const truncateDescription = (text, maxLength = 85) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength).trim() + '...';
+  const handleViewDetails = () => {
+    navigate(`/property/${property.id}`);
   };
 
   return (
     <div 
-      className={`property-card-enhanced ${isDragging ? 'dragging' : ''}`}
+      style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+        transition: 'box-shadow 0.3s ease, transform 0.3s ease',
+        cursor: isDraggable ? 'grab' : 'pointer'
+      }}
       draggable={isDraggable}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+        e.currentTarget.style.transform = 'translateY(-4px)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+        e.currentTarget.style.transform = 'translateY(0)';
+      }}
       role="article"
-      aria-label={`${property.type} at ${property.location}`}
+      aria-label={`${property.type} at ${property.title || property.location}`}
     >
       {/* Image Section */}
-      <div className="property-card-image-wrapper">
+      <div style={{
+        position: 'relative',
+        height: '256px',
+        overflow: 'hidden',
+        backgroundColor: '#f0f0f0'
+      }}>
         <img 
-          src={property.images[0]} 
-          alt={`${property.type} property at ${property.location}`}
-          className="property-card-image"
+          src={getImageSource()}
+          alt={`${property.type} property at ${property.title || property.location}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transition: 'transform 0.5s ease',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
           loading="lazy"
         />
         
-        {/* Overlays */}
-        <div className="property-card-overlay">
-          {/* Type Badge */}
-          <div className="property-card-badge property-type-badge">
-            {property.type === 'house' ? '🏠' : '🏢'} {property.type.charAt(0).toUpperCase() + property.type.slice(1)}
-          </div>
-
-          {/* Date Badge */}
-          <div className="property-card-badge property-date-badge">
-            {getDaysListed()}
-          </div>
-
-          {/* Tenure Badge */}
-          {property.tenure && (
-            <div className="property-card-badge property-tenure-badge">
-              {property.tenure}
-            </div>
-          )}
+        {/* Type Badge */}
+        <div style={{
+          position: 'absolute',
+          top: '12px',
+          left: '12px',
+          backgroundColor: '#1e3a5f',
+          color: 'white',
+          padding: '6px 12px',
+          borderRadius: '20px',
+          fontSize: '12px',
+          fontWeight: '600',
+          textTransform: 'uppercase',
+          zIndex: 2
+        }}>
+          {property.type === 'house' ? 'House' : 'Flat'}
         </div>
 
         {/* Favorite Button */}
         <button
           onClick={handleAddToFavourites}
-          className={`property-card-favourite-btn ${isFavourited ? 'favoured' : ''}`}
+          style={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            border: 'none',
+            backgroundColor: isFavourited ? '#e8927c' : 'white',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background-color 0.3s ease',
+            zIndex: 3
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = isFavourited ? '#d67b65' : '#f5f5f5';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = isFavourited ? '#e8927c' : 'white';
+          }}
           aria-label={isFavourited ? 'Remove from favourites' : 'Add to favourites'}
           title={isFavourited ? 'Remove from favourites' : 'Add to favourites'}
-          disabled={false}
         >
-          {isFavourited ? '❤️' : '🤍'}
+          <Heart
+            className="w-5 h-5"
+            style={{
+              fill: isFavourited ? 'white' : 'none',
+              color: isFavourited ? 'white' : '#999',
+              transition: 'all 0.3s ease'
+            }}
+          />
         </button>
-        {isFavourited && <div className="favourite-badge" title="Added to favourites">✓</div>}
       </div>
 
       {/* Content Section */}
-      <div className="property-card-content">
-        {/* Price Section */}
-        <div className="property-card-price-section">
-          <h2 className="property-card-price">
-            {formatPrice(property.price)}
-          </h2>
-          {property.bedrooms > 0 && (
-            <p className="property-card-price-per-bed">
-              £{formatPricePerBedroom(property.price, property.bedrooms).replace('£', '').trim()}/bed
-            </p>
-          )}
+      <div style={{ padding: '20px' }}>
+        {/* Price & Bedrooms Row */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: '12px'
+        }}>
+          <h3 style={{
+            fontSize: '24px',
+            fontWeight: '700',
+            color: '#1e3a5f',
+            margin: 0
+          }}>
+            £{property.price.toLocaleString()}
+          </h3>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            color: '#666',
+            fontSize: '14px'
+          }}>
+            <Bed className="w-4 h-4" />
+            <span style={{ fontWeight: '600' }}>{property.bedrooms}</span>
+          </div>
         </div>
+
+        {/* Title */}
+        <h4 
+          onClick={handleViewDetails}
+          style={{
+            fontSize: '18px',
+            fontWeight: '700',
+            color: '#1e3a5f',
+            margin: '0 0 8px 0',
+            cursor: 'pointer',
+            transition: 'color 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#e8927c';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#1e3a5f';
+          }}
+        >
+          {encodeHTML(property.title || property.location)}
+        </h4>
 
         {/* Location */}
-        <div className="property-card-location">
-          <span className="location-icon">📍</span>
-          <div className="location-details">
-            <p className="location-text">{encodeHTML(property.location)}</p>
-            {property.postcode && (
-              <p className="postcode-text">{encodeHTML(property.postcode)}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Key Features */}
-        <div className="property-card-features">
-          <div className="feature">
-            <span className="feature-icon">🛏️</span>
-            <span className="feature-value">{property.bedrooms}</span>
-            <span className="feature-label">Bed{property.bedrooms !== 1 ? 's' : ''}</span>
-          </div>
-          {property.tenure && (
-            <div className="feature">
-              <span className="feature-icon">📋</span>
-              <span className="feature-value">{property.tenure}</span>
-            </div>
-          )}
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '8px',
+          color: '#666',
+          marginBottom: '16px',
+          fontSize: '14px'
+        }}>
+          <MapPin className="w-4 h-4 mt-1 flex-shrink-0" style={{ marginTop: '4px' }} />
+          <span>{encodeHTML(property.location)}</span>
         </div>
 
         {/* Description */}
-        <div className="property-card-description">
-          <p className="description-text">
-            {showFullDescription 
-              ? encodeHTML(property.description)
-              : encodeHTML(truncateDescription(property.description, 85))
-            }
-          </p>
-          {property.description.length > 85 && (
-            <button
-              className="property-card-read-more"
-              onClick={() => setShowFullDescription(!showFullDescription)}
-              aria-expanded={showFullDescription}
-            >
-              {showFullDescription ? 'Read Less' : 'Read More'}
-            </button>
-          )}
-        </div>
+        <p style={{
+          color: '#666',
+          fontSize: '14px',
+          marginBottom: '16px',
+          display: '-webkit-box',
+          WebkitLineClamp: '2',
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
+        }}>
+          {encodeHTML(property.short_description)}
+        </p>
 
-        {/* Footer */}
-        <div className="property-card-footer">
-          <p className="property-card-meta">
-            Listed {getDaysListed()}
-          </p>
-          <button 
-            onClick={() => onViewDetails && onViewDetails(property.id)}
-            className="property-card-link-btn"
-            aria-label={`View full details for property at ${property.location}`}
-          >
-            View Details →
-          </button>
-        </div>
+        {/* View Details Button */}
+        <button
+          onClick={handleViewDetails}
+          style={{
+            width: '100%',
+            padding: '12px',
+            backgroundColor: '#e8927c',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '15px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#d67b65';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#e8927c';
+          }}
+        >
+          View Details
+        </button>
       </div>
     </div>
   );
