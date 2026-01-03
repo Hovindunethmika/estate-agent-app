@@ -10,16 +10,22 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
   const [loading, setLoading] = useState(property ? false : true);
   const [error, setError] = useState(null);
   const [isFav, setIsFav] = useState(isFavourite);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Fetch property details on mount if propertyId is provided
   useEffect(() => {
     if (property) {
       setPropertyData(property);
       setIsFav(isFavourite);
+      setLoading(false);
       return;
     }
 
-    if (!propertyId) return;
+    if (!propertyId) {
+      setLoading(false);
+      return;
+    }
   }, [propertyId, property, isFavourite]);
 
   const formatPrice = (price) => {
@@ -200,6 +206,15 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
   }
 
   // Page mode - standalone page without modal overlay
+  if (!propertyData) {
+    return (
+      <div className="property-details-page-content" style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>Property Not Found</h2>
+        <p>Unable to load property details. Please go back and try again.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="property-details-page-content">
       {/* Page Header */}

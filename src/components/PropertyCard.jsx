@@ -11,7 +11,8 @@ const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = 
   const handleDragStart = (e) => {
     setIsDragging(true);
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('propertyId', property.id.toString());
+    e.dataTransfer.setData('propertyId', JSON.stringify(property.id));
+    e.dataTransfer.setData('propertyData', JSON.stringify(property));
     if (onDragStart) {
       onDragStart();
     }
