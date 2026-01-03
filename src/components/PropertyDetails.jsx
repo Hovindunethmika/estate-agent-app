@@ -172,11 +172,13 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
                 title={isFav ? 'Remove from favourites' : 'Add to favourites'}
               >
                 <Heart
-                  className={`w-6 h-6 ${
-                    isFav
-                      ? 'fill-red-500 text-red-500'
-                      : 'text-slate-400'
-                  }`}
+                  size={24}
+                  strokeWidth={2.5}
+                  style={{
+                    color: isFav ? '#FF6B6B' : '#FF6B6B',
+                    fill: isFav ? '#FF6B6B' : 'none',
+                    stroke: isFav ? '#FF6B6B' : '#FF6B6B'
+                  }}
                 />
               </button>
               <button 
@@ -234,11 +236,13 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
           title={isFav ? 'Remove from favourites' : 'Add to favourites'}
         >
           <Heart
-            className={`w-6 h-6 ${
-              isFav
-                ? 'fill-red-500 text-red-500'
-                : 'text-slate-400'
-            }`}
+            size={24}
+            strokeWidth={2.5}
+            style={{
+              color: isFav ? '#FF6B6B' : '#FF6B6B',
+              fill: isFav ? '#FF6B6B' : 'none',
+              stroke: isFav ? '#FF6B6B' : '#FF6B6B'
+            }}
           />
         </button>
       </div>

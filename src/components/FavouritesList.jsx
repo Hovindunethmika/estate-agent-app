@@ -85,7 +85,7 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
           alignItems: 'center',
           gap: '8px'
         }}>
-          <Heart className="h-5 w-5" style={{ fill: 'white' }} />
+          <Heart size={20} strokeWidth={2.5} style={{ fill: 'white', color: 'white', stroke: 'white' }} />
           <h3 style={{
             fontSize: '18px',
             fontWeight: '700',
@@ -130,9 +130,10 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
               paddingTop: '32px',
               paddingBottom: '32px'
             }}>
-              <Heart className="h-12 w-12" style={{
+              <Heart size={48} strokeWidth={2} style={{
                 margin: '0 auto 12px',
-                color: '#ddd'
+                color: '#ddd',
+                stroke: '#ddd'
               }} />
               <p style={{
                 color: '#999',
@@ -260,7 +261,7 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
                     aria-label="Remove from favourites"
                     title="Remove from favourites"
                   >
-                    <X className="h-4 w-4" />
+                    <X size={16} />
                   </button>
                 </div>
               ))}
@@ -298,7 +299,7 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
               e.currentTarget.style.borderColor = '#ffe0d6';
             }}
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 size={16} />
             Clear All
           </button>
         )}
