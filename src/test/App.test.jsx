@@ -12,15 +12,19 @@ describe('PropertyCard Component', () => {
   // Sample test property data
   const mockProperty = {
     id: 'prop1',
-    type: 'House',
+    type: 'house',
     bedrooms: 3,
     price: 750000,
-    tenure: 'Freehold',
-    description: 'Beautiful family home with garden and modern amenities.',
+    title: 'Beautiful family home at 123 Main Street',
+    short_description: 'Beautiful family home with garden.',
+    long_description: 'Beautiful family home with garden and modern amenities.',
     location: 'London, UK',
     postcode: 'SW1A 1AA',
-    images: ['images/prop1.jpg'],
-    dateAdded: '2025-12-15',
+    images: ['https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop'],
+    floor_plan: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop',
+    date_added: '2025-12-15',
+    latitude: 51.5074,
+    longitude: -0.1477,
   };
 
   // Test 1: Component renders correctly with property data

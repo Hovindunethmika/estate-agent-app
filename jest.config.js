@@ -8,6 +8,9 @@ export default {
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(lucide-react|react-widgets|@radix-ui)/)'
+  ],
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.{js,jsx}',
     '<rootDir>/src/**/*.{spec,test}.{js,jsx}',

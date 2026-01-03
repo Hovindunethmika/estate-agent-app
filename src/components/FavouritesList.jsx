@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
+import { Heart, X, Trash2 } from 'lucide-react';
 import { encodeHTML } from '../utils/securityUtils';
+import { useNavigate } from 'react-router-dom';
 
 const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, onDragOutRemove = null }) => {
-  // Track drag state and which item is being dragged
   const [isDragOver, setIsDragOver] = useState(false);
   const [draggedItemId, setDraggedItemId] = useState(null);
-  
-  // Format price as GBP currency
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'GBP',
-      maximumFractionDigits: 0
-    }).format(price);
-  };
+  const navigate = useNavigate();
 
-  // Handle drag over for drop target
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
@@ -23,8 +15,7 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
   };
 
   const handleDragLeave = (e) => {
-    // Only set to false if leaving the favorites-list container entirely
-    if (e.target.classList.contains('favourites-list')) {
+    if (e.target.classList && e.target.classList.contains('favourites-droppable')) {
       setIsDragOver(false);
     }
   };
@@ -49,82 +40,250 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
     setDraggedItemId(null);
   };
 
+  const handleNavigateToProperty = (propertyId) => {
+    navigate(`/property/${propertyId}`);
+  };
+
   return (
-    <div 
-      className={`favourites-list ${isDragOver ? 'drag-over' : ''}`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
-      <div className="favourites-header">
-        <h2>Favourites ({favourites.length})</h2>
-        {favourites.length > 0 && (
-          <button onClick={onClear} className="btn-clear">
-            Clear All
-          </button>
-        )}
-      </div>
-      
-      {favourites.length === 0 ? (
-        <div className="favourites-empty">
-          <p>No favourite properties yet</p>
-          <p className="hint">Drag properties here or click the heart button</p>
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '12px',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      overflow: 'hidden',
+      position: 'sticky',
+      top: '120px'
+    }}>
+      {/* Header */}
+      <div style={{
+        backgroundColor: '#1e3a5f',
+        color: 'white',
+        padding: '16px',
+        borderBottom: '1px solid #e0e0e0',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <Heart className="h-5 w-5" style={{ fill: 'white' }} />
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: '700',
+            margin: 0
+          }}>Favourites</h3>
         </div>
-      ) : (
-        <>
-          <div className="favourites-items">
-            {favourites.map(property => (
-              <div 
-                key={property.id} 
-                className={`favourite-item ${draggedItemId === property.id ? 'dragging-out' : ''}`}
-                draggable
-                onDragStart={(e) => handleRemoveDragStart(e, property.id)}
-                onDragEnd={handleItemDragEnd}
-                role="listitem"
-              >
-                <div 
-                  onClick={() => onViewDetails(property.id)}
-                  className="favourite-thumbnail-container"
-                  style={{ cursor: 'pointer' }}
-                  role="button"
-                  tabIndex="0"
-                  onKeyDown={(e) => e.key === 'Enter' && onViewDetails(property.id)}
+        <div style={{
+          backgroundColor: 'white',
+          color: '#1e3a5f',
+          padding: '4px 12px',
+          borderRadius: '20px',
+          fontSize: '13px',
+          fontWeight: '700'
+        }}>
+          {favourites.length}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: '16px' }}>
+        {favourites.length === 0 ? (
+          <div style={{
+            textAlign: 'center',
+            paddingTop: '32px',
+            paddingBottom: '32px'
+          }}>
+            <Heart className="h-12 w-12" style={{
+              margin: '0 auto 12px',
+              color: '#ddd'
+            }} />
+            <p style={{
+              color: '#999',
+              fontSize: '14px',
+              margin: '0 0 4px 0'
+            }}>No favourites yet</p>
+            <p style={{
+              color: '#aaa',
+              fontSize: '12px',
+              margin: 0
+            }}>Drag properties here or click the heart icon</p>
+          </div>
+        ) : (
+          <>
+            {/* Droppable Area */}
+            <div
+              className="favourites-droppable"
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                minHeight: '100px',
+                padding: '8px',
+                borderRadius: '8px',
+                transition: 'all 0.2s ease',
+                backgroundColor: isDragOver ? '#f0f5fa' : 'transparent',
+                border: isDragOver ? '2px dashed #4a90e2' : 'none'
+              }}
+            >
+              {favourites.map((property, index) => (
+                <div
+                  key={property.id}
+                  draggable
+                  onDragStart={(e) => handleRemoveDragStart(e, property.id)}
+                  onDragEnd={handleItemDragEnd}
+                  style={{
+                    backgroundColor: '#f9f9f9',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    border: '2px solid #e0e0e0',
+                    transition: 'all 0.3s ease',
+                    transform: draggedItemId === property.id ? 'rotate(2deg) scale(1.05)' : 'scale(1)',
+                    opacity: draggedItemId === property.id ? 0.7 : 1,
+                    cursor: 'grab',
+                    display: 'flex',
+                    gap: '12px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (draggedItemId !== property.id) {
+                      e.currentTarget.style.borderColor = '#e8927c';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (draggedItemId !== property.id) {
+                      e.currentTarget.style.borderColor = '#e0e0e0';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }
+                  }}
                 >
-                  <img 
-                    src={property.images[0]} 
-                    alt={encodeHTML(property.description)} 
-                    className="favourite-thumbnail"
+                  {/* Thumbnail */}
+                  <img
+                    src={property.images && property.images[0] ? property.images[0] : 'https://via.placeholder.com/64x64?text=No+Image'}
+                    alt={encodeHTML(property.title || property.location)}
+                    onClick={() => handleNavigateToProperty(property.id)}
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                      objectFit: 'cover',
+                      borderRadius: '6px',
+                      cursor: 'pointer'
+                    }}
                   />
-                </div>
-                <div className="favourite-info">
-                  <div 
-                    onClick={() => onViewDetails(property.id)}
-                    className="favourite-details"
-                    style={{ cursor: 'pointer' }}
-                    role="button"
-                    tabIndex="0"
-                    onKeyDown={(e) => e.key === 'Enter' && onViewDetails(property.id)}
-                  >
-                    <h4>{formatPrice(property.price)}</h4>
-                    <p>{encodeHTML(property.location)}</p>
+
+                  {/* Info */}
+                  <div style={{
+                    flex: 1,
+                    minWidth: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}>
+                    <h4
+                      onClick={() => handleNavigateToProperty(property.id)}
+                      style={{
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: '#333',
+                        margin: '0 0 4px 0',
+                        cursor: 'pointer',
+                        transition: 'color 0.3s ease',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#e8927c';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#333';
+                      }}
+                    >
+                      {encodeHTML(property.title || property.location)}
+                    </h4>
+                    <p style={{
+                      color: '#1e3a5f',
+                      fontWeight: '700',
+                      fontSize: '13px',
+                      margin: 0
+                    }}>
+                      £{property.price.toLocaleString()}
+                    </p>
                   </div>
-                  <button 
-                    onClick={() => onRemove(property.id)} 
-                    className="btn-remove"
+
+                  {/* Remove Button */}
+                  <button
+                    onClick={() => onRemove(property.id)}
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      padding: 0,
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s ease',
+                      color: '#999',
+                      flexShrink: 0
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ffe0d6';
+                      e.currentTarget.style.color = '#e8927c';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = '#999';
+                    }}
                     aria-label="Remove from favourites"
                     title="Remove from favourites"
                   >
-                    ✕
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="favourites-hint">
-            <p>💡 Drag items out to remove them</p>
-          </div>
-        </>
-      )}
+              ))}
+            </div>
+
+            {/* Clear All Button */}
+            <button
+              onClick={onClear}
+              style={{
+                width: '100%',
+                marginTop: '16px',
+                padding: '12px',
+                border: '2px solid #ffe0d6',
+                backgroundColor: 'white',
+                borderRadius: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                color: '#e8927c',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#fff5f0';
+                e.currentTarget.style.borderColor = '#e8927c';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.borderColor = '#ffe0d6';
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              Clear All
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 };
