@@ -10,11 +10,13 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
 
   const handleDragOver = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
     setIsDragOver(true);
   };
 
   const handleDragLeave = (e) => {
+    e.stopPropagation();
     if (e.target.classList && e.target.classList.contains('favourites-droppable')) {
       setIsDragOver(false);
     }
@@ -22,17 +24,32 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
 
   const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
     const propertyId = e.dataTransfer.getData('propertyId');
-    if (propertyId && onDrop) {
-      onDrop(propertyId);
+    if (propertyId) {
+      try {
+        const id = JSON.parse(propertyId);
+        if (onDrop) {
+          onDrop(id);
+        }
+      } catch (err) {
+        // If JSON parse fails, try to convert to number
+        const id = parseInt(propertyId, 10);
+        if (!isNaN(id) && onDrop) {
+          onDrop(id);
+        } else if (onDrop) {
+          onDrop(propertyId);
+        }
+      }
     }
   };
 
   const handleRemoveDragStart = (e, propertyId) => {
     setDraggedItemId(propertyId);
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('removePropertyId', propertyId.toString());
+    e.dataTransfer.setData('removePropertyId', JSON.stringify(propertyId));
+    e.dataTransfer.setData('propertyId', JSON.stringify(propertyId));
     e.dataTransfer.setData('draggingFromFavourites', 'true');
   };
 
@@ -68,7 +85,7 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
           alignItems: 'center',
           gap: '8px'
         }}>
-          <Heart className="h-5 w-5" style={{ fill: 'white' }} />
+          <Heart size={20} strokeWidth={2.5} style={{ fill: 'white', color: 'white', stroke: 'white' }} />
           <h3 style={{
             fontSize: '18px',
             fontWeight: '700',
@@ -89,47 +106,48 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
 
       {/* Content */}
       <div style={{ padding: '16px' }}>
-        {favourites.length === 0 ? (
-          <div style={{
-            textAlign: 'center',
-            paddingTop: '32px',
-            paddingBottom: '32px'
-          }}>
-            <Heart className="h-12 w-12" style={{
-              margin: '0 auto 12px',
-              color: '#ddd'
-            }} />
-            <p style={{
-              color: '#999',
-              fontSize: '14px',
-              margin: '0 0 4px 0'
-            }}>No favourites yet</p>
-            <p style={{
-              color: '#aaa',
-              fontSize: '12px',
-              margin: 0
-            }}>Drag properties here or click the heart icon</p>
-          </div>
-        ) : (
-          <>
-            {/* Droppable Area */}
-            <div
-              className="favourites-droppable"
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-                minHeight: '100px',
-                padding: '8px',
-                borderRadius: '8px',
-                transition: 'all 0.2s ease',
-                backgroundColor: isDragOver ? '#f0f5fa' : 'transparent',
-                border: isDragOver ? '2px dashed #4a90e2' : 'none'
-              }}
-            >
+        {/* Always show droppable area */}
+        <div
+          className="favourites-droppable"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            minHeight: '100px',
+            padding: '8px',
+            borderRadius: '8px',
+            transition: 'all 0.2s ease',
+            backgroundColor: isDragOver ? '#f0f5fa' : 'transparent',
+            border: isDragOver ? '2px dashed #4a90e2' : '2px solid transparent'
+          }}
+        >
+          {favourites.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              paddingTop: '32px',
+              paddingBottom: '32px'
+            }}>
+              <Heart size={48} strokeWidth={2} style={{
+                margin: '0 auto 12px',
+                color: '#ddd',
+                stroke: '#ddd'
+              }} />
+              <p style={{
+                color: '#999',
+                fontSize: '14px',
+                margin: '0 0 4px 0'
+              }}>No favourites yet</p>
+              <p style={{
+                color: '#aaa',
+                fontSize: '12px',
+                margin: 0
+              }}>Drag properties here or click the heart icon</p>
+            </div>
+          ) : (
+            <>
               {favourites.map((property, index) => (
                 <div
                   key={property.id}
@@ -243,45 +261,47 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
                     aria-label="Remove from favourites"
                     title="Remove from favourites"
                   >
-                    <X className="h-4 w-4" />
+                    <X size={16} />
                   </button>
                 </div>
               ))}
-            </div>
+            </>
+          )}
+        </div>
 
-            {/* Clear All Button */}
-            <button
-              onClick={onClear}
-              style={{
-                width: '100%',
-                marginTop: '16px',
-                padding: '12px',
-                border: '2px solid #ffe0d6',
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                fontSize: '15px',
-                fontWeight: '600',
-                color: '#e8927c',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#fff5f0';
-                e.currentTarget.style.borderColor = '#e8927c';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
-                e.currentTarget.style.borderColor = '#ffe0d6';
-              }}
-            >
-              <Trash2 className="h-4 w-4" />
-              Clear All
-            </button>
-          </>
+        {/* Clear All Button - only show when there are favorites */}
+        {favourites.length > 0 && (
+          <button
+            onClick={onClear}
+            style={{
+              width: '100%',
+              marginTop: '16px',
+              padding: '12px',
+              border: '2px solid #ffe0d6',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              fontSize: '15px',
+              fontWeight: '600',
+              color: '#e8927c',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#fff5f0';
+              e.currentTarget.style.borderColor = '#e8927c';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'white';
+              e.currentTarget.style.borderColor = '#ffe0d6';
+            }}
+          >
+            <Trash2 size={16} />
+            Clear All
+          </button>
         )}
       </div>
     </div>

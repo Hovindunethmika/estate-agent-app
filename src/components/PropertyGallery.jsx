@@ -21,18 +21,6 @@ export default function PropertyGallery({ images, title }) {
           position: 'relative',
           group: true,
           marginBottom: '0'
-        }}
-        onMouseEnter={(e) => {
-          const buttons = e.currentTarget.querySelectorAll('.nav-button');
-          buttons.forEach(btn => {
-            btn.style.opacity = '1';
-          });
-        }}
-        onMouseLeave={(e) => {
-          const buttons = e.currentTarget.querySelectorAll('.nav-button');
-          buttons.forEach(btn => {
-            btn.style.opacity = '0';
-          });
         }}>
           <div style={{
             position: 'relative',
@@ -63,22 +51,22 @@ export default function PropertyGallery({ images, title }) {
                 width: '40px',
                 height: '40px',
                 border: 'none',
-                backgroundColor: 'white',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                opacity: 0,
-                transition: 'opacity 0.3s ease',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                opacity: 0.95,
+                transition: 'opacity 0.3s ease, background-color 0.3s ease',
                 zIndex: 10
               }}
               onClick={prevImage}
               aria-label="Previous image"
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.95)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.95'; e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'; }}
             >
-              <ChevronLeft className="h-6 w-6" style={{ color: '#333' }} />
+              <ChevronLeft size={24} style={{ color: '#FFD700', strokeWidth: 3 }} />
             </button>
             <button
               className="nav-button"
@@ -91,22 +79,22 @@ export default function PropertyGallery({ images, title }) {
                 width: '40px',
                 height: '40px',
                 border: 'none',
-                backgroundColor: 'white',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                opacity: 0,
-                transition: 'opacity 0.3s ease',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                opacity: 0.95,
+                transition: 'opacity 0.3s ease, background-color 0.3s ease',
                 zIndex: 10
               }}
               onClick={nextImage}
               aria-label="Next image"
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.95)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.95'; e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'; }}
             >
-              <ChevronRight className="h-6 w-6" style={{ color: '#333' }} />
+              <ChevronRight size={24} style={{ color: '#FFD700', strokeWidth: 3 }} />
             </button>
 
             {/* Expand Button */}
@@ -133,7 +121,7 @@ export default function PropertyGallery({ images, title }) {
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
             >
-              <Maximize2 className="h-5 w-5" style={{ color: '#333' }} />
+              <Maximize2 size={20} style={{ color: '#333' }} />
             </button>
 
             {/* Image Counter */}
@@ -259,7 +247,7 @@ export default function PropertyGallery({ images, title }) {
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
             >
-              <ChevronLeft className="h-6 w-6" style={{ color: '#333' }} />
+              <ChevronLeft size={24} style={{ color: '#333' }} />
             </button>
             <button
               style={{
@@ -285,7 +273,7 @@ export default function PropertyGallery({ images, title }) {
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
             >
-              <ChevronRight className="h-6 w-6" style={{ color: '#333' }} />
+              <ChevronRight size={24} style={{ color: '#333' }} />
             </button>
 
             <button
@@ -311,7 +299,7 @@ export default function PropertyGallery({ images, title }) {
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
             >
-              <X className="h-6 w-6" style={{ color: '#333' }} />
+              <X size={24} style={{ color: '#333' }} />
             </button>
 
             <div style={{

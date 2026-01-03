@@ -5,17 +5,20 @@ const RemoveZone = ({ onDrop }) => {
 
   const handleDragEnter = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
     setIsDragOver(true);
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
     setIsDragOver(true);
   };
 
   const handleDragLeave = (e) => {
+    e.stopPropagation();
     // Only set to false if we're leaving the zone and not going to a child
     if (e.currentTarget === e.target) {
       setIsDragOver(false);
@@ -24,10 +27,24 @@ const RemoveZone = ({ onDrop }) => {
 
   const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
     const propertyId = e.dataTransfer.getData('removePropertyId');
-    if (propertyId && onDrop) {
-      onDrop(propertyId);
+    if (propertyId) {
+      try {
+        const id = JSON.parse(propertyId);
+        if (onDrop) {
+          onDrop(id);
+        }
+      } catch (err) {
+        // If JSON parse fails, try to convert to number
+        const id = parseInt(propertyId, 10);
+        if (!isNaN(id) && onDrop) {
+          onDrop(id);
+        } else if (onDrop) {
+          onDrop(propertyId);
+        }
+      }
     }
   };
 

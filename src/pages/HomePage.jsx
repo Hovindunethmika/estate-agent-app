@@ -98,7 +98,10 @@ const HomePage = ({
       </header>
 
       {/* Main Content */}
-      <div style={{ background: 'linear-gradient(to bottom right, rgba(248,249,251,1) 0%, rgba(240,245,250,1) 100%)' }} className="flex-1">
+      <div style={{ 
+        background: 'linear-gradient(to bottom right, rgba(248,249,251,1) 0%, rgba(240,245,250,1) 100%)',
+        flex: 1
+      }}>
         {/* Search Form */}
         <SearchForm 
           properties={allProperties}
@@ -138,12 +141,6 @@ const HomePage = ({
             {/* Favorites Sidebar */}
             <aside className="home-sidebar">
               <div className="home-sidebar-content">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                  <span style={{ fontSize: '1.25rem' }}>❤️</span>
-                  <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-dark)' }}>
-                    Saved Favourites
-                  </h2>
-                </div>
                 <FavouritesList 
                   favourites={favourites}
                   onRemove={onRemoveFromFavourites}

@@ -30,10 +30,21 @@ const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStar
 
   if (!sortedProperties || sortedProperties.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-md p-12 text-center">
-        <Search className="w-16 h-16 mx-auto text-slate-300 mb-4" />
-        <h3 className="text-xl font-semibold text-slate-700 mb-2">No properties found</h3>
-        <p className="text-slate-500">
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        padding: '48px',
+        textAlign: 'center'
+      }}>
+        <Search size={64} style={{ margin: '0 auto 16px', color: '#d1d5db' }} />
+        <h3 style={{
+          fontSize: '20px',
+          fontWeight: '600',
+          color: '#374151',
+          marginBottom: '8px'
+        }}>No properties found</h3>
+        <p style={{ color: '#6b7280' }}>
           Try adjusting your search criteria to see more results
         </p>
       </div>
@@ -41,43 +52,45 @@ const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStar
   }
 
   return (
-    <div className="space-y-6">
-      {/* Results Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-1">
-            {sortedProperties.length === properties.length 
-              ? 'All Properties' 
-              : `Found ${sortedProperties.length} ${sortedProperties.length === 1 ? 'Property' : 'Properties'}`}
-          </h2>
-          <p className="text-slate-600">
-            Showing {sortedProperties.length} of {properties.length} properties
-          </p>
-        </div>
-
-        {/* Sort Dropdown */}
-        <div className="flex items-center gap-3">
-          <label htmlFor="sort-select" className="text-sm font-medium text-slate-700">
-            Sort by:
-          </label>
-          <select
-            id="sort-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
-            aria-label="Sort properties"
-          >
-            <option value="default">Most Relevant</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="bedrooms">Most Bedrooms</option>
-            <option value="newest">Recently Added</option>
-          </select>
-        </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Sort Controls */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+      }}>
+        <label htmlFor="sort-select" style={{
+          fontSize: '14px',
+          fontWeight: '500',
+          color: '#374151'
+        }}>
+          Sort by:
+        </label>
+        <select
+          id="sort-select"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          style={{
+            padding: '8px 16px',
+            border: '1px solid #d1d5db',
+            borderRadius: '8px',
+            backgroundColor: 'white',
+            fontSize: '14px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          aria-label="Sort properties"
+        >
+          <option value="default">Most Relevant</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="bedrooms">Most Bedrooms</option>
+          <option value="newest">Recently Added</option>
+        </select>
       </div>
 
       {/* Properties Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
         {sortedProperties.map(property => (
           <PropertyCard 
             key={property.id} 

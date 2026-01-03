@@ -57,7 +57,7 @@ export default function PropertyTabs({ property }) {
                 }
               }}
             >
-              <Icon className="h-4 w-4" />
+              <Icon size={16} />
               <span style={{
                 display: 'inline'
               }}>

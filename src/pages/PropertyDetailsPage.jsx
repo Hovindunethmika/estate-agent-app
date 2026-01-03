@@ -17,24 +17,33 @@ const PropertyDetailsPage = ({
 
   // Find the property by ID
   useEffect(() => {
-    setIsLoading(true);
-    
-    if (!id || !allProperties || allProperties.length === 0) {
-      setIsLoading(false);
-      return;
-    }
+    // Small delay to ensure all props are initialized
+    const timer = setTimeout(() => {
+      if (!id) {
+        setIsLoading(false);
+        return;
+      }
 
-    const numericId = parseInt(id, 10);
-    const foundProperty = allProperties.find(p => p.id === numericId);
-    
-    if (foundProperty) {
-      setProperty(foundProperty);
-      setIsFavourite(favourites.some(fav => fav.id === foundProperty.id));
-      // Scroll to top
-      window.scrollTo(0, 0);
-    }
-    
-    setIsLoading(false);
+      if (!allProperties || allProperties.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      const numericId = parseInt(id, 10);
+      const foundProperty = allProperties.find(p => p.id == numericId || String(p.id) === id);
+      
+      if (foundProperty) {
+        setProperty(foundProperty);
+        setIsFavourite(favourites.some(fav => fav.id === foundProperty.id));
+        window.scrollTo(0, 0);
+      } else {
+        setProperty(null);
+      }
+      
+      setIsLoading(false);
+    }, 50);
+
+    return () => clearTimeout(timer);
   }, [id, allProperties, favourites]);
 
   // Handle back navigation

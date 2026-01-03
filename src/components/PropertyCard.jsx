@@ -11,7 +11,8 @@ const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = 
   const handleDragStart = (e) => {
     setIsDragging(true);
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('propertyId', property.id.toString());
+    e.dataTransfer.setData('propertyId', JSON.stringify(property.id));
+    e.dataTransfer.setData('propertyData', JSON.stringify(property));
     if (onDragStart) {
       onDragStart();
     }
@@ -139,10 +140,12 @@ const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = 
           title={isFavourited ? 'Remove from favourites' : 'Add to favourites'}
         >
           <Heart
-            className="w-5 h-5"
+            size={20}
+            strokeWidth={2}
             style={{
-              fill: isFavourited ? 'white' : 'none',
-              color: isFavourited ? 'white' : '#999',
+              fill: isFavourited ? '#FF6B6B' : 'none',
+              color: '#FF6B6B',
+              stroke: '#FF6B6B',
               transition: 'all 0.3s ease'
             }}
           />
@@ -173,7 +176,7 @@ const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = 
             color: '#666',
             fontSize: '14px'
           }}>
-            <Bed className="w-4 h-4" />
+            <Bed size={16} />
             <span style={{ fontWeight: '600' }}>{property.bedrooms}</span>
           </div>
         </div>
@@ -208,7 +211,7 @@ const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = 
           marginBottom: '16px',
           fontSize: '14px'
         }}>
-          <MapPin className="w-4 h-4 mt-1 flex-shrink-0" style={{ marginTop: '4px' }} />
+          <MapPin size={16} style={{ marginTop: '4px', flexShrink: 0 }} />
           <span>{encodeHTML(property.location)}</span>
         </div>
 
