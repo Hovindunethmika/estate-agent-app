@@ -604,12 +604,9 @@ header {
   color: white;
   padding: 3rem 1.5rem;
   box-shadow: var(--shadow-md);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  width: 100%;
+  position: relative;
+  top: auto;
+  z-index: 50;
 }
 
 @media (max-width: 768px) {
@@ -1089,20 +1086,18 @@ label {
   flex-direction: column;
   gap: 2rem;
   max-width: 1200px;
-  margin: 150px auto 0;
+  margin: 0 auto;
   padding: 2rem 1.5rem;
 }
 
 @media (max-width: 768px) {
   .property-details-container {
-    margin: 130px auto 0;
     padding: 1.5rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .property-details-container {
-    margin: 110px auto 0;
     padding: 1rem 0.75rem;
   }
 }
@@ -1291,19 +1286,17 @@ label {
   padding: 2rem 1.5rem;
   max-width: 1200px;
   width: 100%;
-  margin: 150px auto 0;
+  margin: 0 auto;
 }
 
 @media (max-width: 768px) {
   .app-main {
-    margin: 130px auto 0;
     padding: 1.5rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .app-main {
-    margin: 110px auto 0;
     padding: 1rem 0.75rem;
   }
 }
