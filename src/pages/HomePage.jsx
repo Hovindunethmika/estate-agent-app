@@ -77,11 +77,6 @@ const HomePage = ({
     navigate(`/property/${propertyId}`);
   };
 
-  // Handle drag start from property cards (drag to favorites)
-  const handleDragStart = () => {
-    // This handler is just a placeholder - the actual drag logic is in PropertyCard
-  };
-
   return (
     <div className="app-container">
       {/* Professional Header with Gradient Background */}
@@ -91,7 +86,7 @@ const HomePage = ({
             <div className="header-icon">
               🏠
             </div>
-            <h1>Property Search</h1>
+            <h1>Estate Agent App</h1>
           </div>
           <p className="header-subtitle">Find your perfect home from our exclusive listings</p>
         </div>
@@ -124,7 +119,7 @@ const HomePage = ({
                     properties={filteredProperties}
                     onAddToFavourites={onAddToFavourites}
                     onViewDetails={handleViewPropertyDetails}
-                    onDragStart={handleDragStart}
+
                     favourites={favourites}
                     onRemoveFromFavourites={onRemoveFromFavourites}
                   />
@@ -146,7 +141,6 @@ const HomePage = ({
                   onRemove={onRemoveFromFavourites}
                   onClear={onClearFavourites}
                   onDrop={onDropOnFavourites}
-                  onViewDetails={handleViewPropertyDetails}
                   onDragOutRemove={onDragOutRemoveFromFavourites}
                 />
                 <RemoveZone onDrop={onDragOutRemoveFromFavourites} />

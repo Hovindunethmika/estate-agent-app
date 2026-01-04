@@ -1,26 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, Bed, MapPin } from 'lucide-react';
+import { useDrag } from 'react-dnd';
 import { encodeHTML } from '../utils/securityUtils';
 import { useNavigate } from 'react-router-dom';
 
-const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = true, isFavourited = false, onRemoveFromFavourites = null }) => {
-  const [isDragging, setIsDragging] = useState(false);
+const PropertyCard = ({ property, onAddToFavourites, isDraggable = true, isFavourited = false, onRemoveFromFavourites = null }) => {
+  const [isDraggingState, setIsDraggingState] = useState(false);
   const navigate = useNavigate();
 
-  // Handle drag start for favorites
-  const handleDragStart = (e) => {
-    setIsDragging(true);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('propertyId', JSON.stringify(property.id));
-    e.dataTransfer.setData('propertyData', JSON.stringify(property));
-    if (onDragStart) {
-      onDragStart();
-    }
-  };
+  // Setup drag with react-dnd
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: 'PROPERTY',
+      item: { propertyId: property.id, property },
+      collect: (monitor) => ({
+        isDragging: !!monitor.isDragging(),
+      }),
+      canDrag: isDraggable,
+    }),
+    [property, isDraggable]
+  );
 
-  const handleDragEnd = (e) => {
-    setIsDragging(false);
-  };
+  // Update visual state when dragging
+  useEffect(() => {
+    setIsDraggingState(isDragging);
+  }, [isDragging]);
 
   const handleAddToFavourites = (e) => {
     e.preventDefault();
@@ -45,24 +49,28 @@ const PropertyCard = ({ property, onAddToFavourites, onDragStart, isDraggable = 
 
   return (
     <div 
+      ref={drag}
       style={{
         backgroundColor: 'white',
         borderRadius: '12px',
         overflow: 'hidden',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-        transition: 'box-shadow 0.3s ease, transform 0.3s ease',
-        cursor: isDraggable ? 'grab' : 'pointer'
+        transition: 'box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease',
+        cursor: isDraggable ? 'grab' : 'pointer',
+        opacity: isDraggingState ? 0.7 : 1,
+        pointerEvents: 'auto',
       }}
-      draggable={isDraggable}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
-        e.currentTarget.style.transform = 'translateY(-4px)';
+        if (isDraggable) {
+          e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
+          e.currentTarget.style.transform = 'translateY(-4px)';
+        }
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-        e.currentTarget.style.transform = 'translateY(0)';
+        if (isDraggable) {
+          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+          e.currentTarget.style.transform = 'translateY(0)';
+        }
       }}
       role="article"
       aria-label={`${property.type} at ${property.title || property.location}`}

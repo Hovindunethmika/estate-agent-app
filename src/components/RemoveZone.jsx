@@ -1,60 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDrop } from 'react-dnd';
 
 const RemoveZone = ({ onDrop }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'move';
-    setIsDragOver(true);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'move';
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.stopPropagation();
-    // Only set to false if we're leaving the zone and not going to a child
-    if (e.currentTarget === e.target) {
-      setIsDragOver(false);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragOver(false);
-    const propertyId = e.dataTransfer.getData('removePropertyId');
-    if (propertyId) {
-      try {
-        const id = JSON.parse(propertyId);
+  // Setup drop zone for removing items
+  const [{ isOver }, dropRef] = useDrop(
+    () => ({
+      accept: 'FAVOURITE_ITEM_REMOVAL',
+      drop: (item) => {
         if (onDrop) {
-          onDrop(id);
+          onDrop(item.propertyId);
         }
-      } catch (err) {
-        // If JSON parse fails, try to convert to number
-        const id = parseInt(propertyId, 10);
-        if (!isNaN(id) && onDrop) {
-          onDrop(id);
-        } else if (onDrop) {
-          onDrop(propertyId);
-        }
-      }
-    }
-  };
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+      }),
+    }),
+    [onDrop]
+  );
+
+  // Update visual state when dragging over
+  useEffect(() => {
+    setIsDragOver(isOver);
+  }, [isOver]);
 
   return (
     <div 
+      ref={dropRef}
       className={`remove-zone ${isDragOver ? 'drag-over' : ''}`}
-      onDragEnter={handleDragEnter}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
+      style={{
+        pointerEvents: 'auto',
+      }}
       role="region"
       aria-label="Drag items here to remove from favourites"
     >
