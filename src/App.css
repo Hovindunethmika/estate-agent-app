@@ -534,12 +534,23 @@ body {
   color: var(--text-dark);
   background-color: var(--bg-light);
   letter-spacing: 0.3px;
+  margin: 0;
+  padding: 0;
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margin-top: 0;
+}
+
+.app-container > header {
+  margin-top: 0;
+}
+
+.app-container > div:not(header) {
+  margin-top: 280px;
 }
 
 /* ============================================
@@ -593,9 +604,12 @@ header {
   color: white;
   padding: 3rem 1.5rem;
   box-shadow: var(--shadow-md);
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 50;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -1075,7 +1089,22 @@ label {
   flex-direction: column;
   gap: 2rem;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 150px auto 0;
+  padding: 2rem 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .property-details-container {
+    margin: 130px auto 0;
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .property-details-container {
+    margin: 110px auto 0;
+    padding: 1rem 0.75rem;
+  }
 }
 
 .property-header-card {
@@ -1262,7 +1291,21 @@ label {
   padding: 2rem 1.5rem;
   max-width: 1200px;
   width: 100%;
-  margin: 0 auto;
+  margin: 150px auto 0;
+}
+
+@media (max-width: 768px) {
+  .app-main {
+    margin: 130px auto 0;
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-main {
+    margin: 110px auto 0;
+    padding: 1rem 0.75rem;
+  }
 }
 
 .app-content {
