@@ -66,17 +66,10 @@
 }
 
 .rw-dropdownlist-btn {
-  background-color: var(--primary) !important;
+  background-color: white !important;
   border: none !important;
-  color: white !important;
-  padding: 0.5rem 0.75rem !important;
-  cursor: pointer !important;
-  font-weight: 600 !important;
-  border-radius: 6px !important;
-  transition: all 0.2s ease !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
 }
 
 .rw-dropdownlist-popup {
@@ -235,8 +228,8 @@
   padding: 0.5rem 0.75rem !important;
   cursor: pointer !important;
   font-weight: 600 !important;
-  border-radius: 6px !important;
   transition: all 0.2s ease !important;
+  border-radius: 6px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -248,7 +241,7 @@
   background-color: var(--primary-dark) !important;
   color: white !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.2) !important;
 }
 
 .rw-numberpicker-btn:active {
@@ -5300,27 +5293,14 @@ small, .text-small {
 }
 
 .rw-dropdownlist-btn {
-  background-color: var(--primary);
+  background-color: var(--bg-white);
   border: none;
-  color: white;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 6px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  min-height: 40px;
+  color: var(--text-light);
 }
 
-.rw-dropdownlist-btn:hover {
-  background-color: var(--primary-dark);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
-}
+.rw-dropdownlist-popup {
+  border: 1px solid var(--border-color);
+  border-top: none;
   background-color: var(--bg-white);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
@@ -5385,13 +5365,13 @@ small, .text-small {
 }
 
 .rw-numberpicker-btn {
-  background-color: var(--primary);
+  background-color: var(--primary-color);
   border: none;
   color: white;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: var(--transition);
   border-radius: 6px;
   display: inline-flex;
   align-items: center;
@@ -5402,15 +5382,14 @@ small, .text-small {
 
 .rw-numberpicker-btn:hover {
   background-color: var(--primary-dark);
+  border-radius: 6px;
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
-  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
 }
 
 .rw-numberpicker-btn:active {
-  color: white;
-  transform: translateY(0);
+  color: var(--primary-dark);
 }
 
 /* DatePicker Widget */
@@ -5600,27 +5579,26 @@ small, .text-small {
 }
 
 .rw-combobox-btn {
-  background-color: var(--primary);
+  background-color: var(--primary-color);
   border: none;
   color: white;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition);
   border-radius: 6px;
-  font-weight: 600;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
-  min-height: 40px;
+  min-width: 36px;
+  min-height: 36px;
 }
 
 .rw-combobox-btn:hover {
   background-color: var(--primary-dark);
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
   border-radius: 6px;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
 }
 
 .rw-combobox-popup {
