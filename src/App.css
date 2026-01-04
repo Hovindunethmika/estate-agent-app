@@ -550,7 +550,7 @@ body {
 }
 
 .app-container > div:not(header) {
-  margin-top: 280px;
+  margin-top: 0;
 }
 
 /* ============================================
