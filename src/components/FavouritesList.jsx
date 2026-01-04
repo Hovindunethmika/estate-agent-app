@@ -1,64 +1,166 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, X, Trash2 } from 'lucide-react';
+import { useDrag, useDrop } from 'react-dnd';
 import { encodeHTML } from '../utils/securityUtils';
 import { useNavigate } from 'react-router-dom';
 
-const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, onDragOutRemove = null }) => {
+const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOutRemove = null }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [draggedItemId, setDraggedItemId] = useState(null);
   const navigate = useNavigate();
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'move';
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.stopPropagation();
-    if (e.target.classList && e.target.classList.contains('favourites-droppable')) {
-      setIsDragOver(false);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragOver(false);
-    const propertyId = e.dataTransfer.getData('propertyId');
-    if (propertyId) {
-      try {
-        const id = JSON.parse(propertyId);
+  // Setup drop zone with react-dnd
+  const [{ isOver }, dropRef] = useDrop(
+    () => ({
+      accept: 'PROPERTY',
+      drop: (item) => {
         if (onDrop) {
-          onDrop(id);
+          onDrop(item.propertyId);
         }
-      } catch (err) {
-        // If JSON parse fails, try to convert to number
-        const id = parseInt(propertyId, 10);
-        if (!isNaN(id) && onDrop) {
-          onDrop(id);
-        } else if (onDrop) {
-          onDrop(propertyId);
-        }
-      }
-    }
-  };
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+      }),
+    }),
+    [onDrop]
+  );
 
-  const handleRemoveDragStart = (e, propertyId) => {
-    setDraggedItemId(propertyId);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('removePropertyId', JSON.stringify(propertyId));
-    e.dataTransfer.setData('propertyId', JSON.stringify(propertyId));
-    e.dataTransfer.setData('draggingFromFavourites', 'true');
-  };
-
-  const handleItemDragEnd = (e) => {
-    setDraggedItemId(null);
-  };
+  // Update visual state when dragging over
+  useEffect(() => {
+    setIsDragOver(isOver);
+  }, [isOver]);
 
   const handleNavigateToProperty = (propertyId) => {
     navigate(`/property/${propertyId}`);
+  };
+
+  // Draggable item component
+  const DraggableFavouriteItem = ({ property, onRemove, onNavigate }) => {
+    const [{ isDragging: isItemDragging }, dragItemRef] = useDrag(
+      () => ({
+        type: 'FAVOURITE_ITEM_REMOVAL',
+        item: { propertyId: property.id, property },
+        collect: (monitor) => ({
+          isDragging: !!monitor.isDragging(),
+        }),
+      }),
+      [property]
+    );
+
+    return (
+      <div
+        ref={dragItemRef}
+        style={{
+          backgroundColor: '#f9f9f9',
+          borderRadius: '8px',
+          padding: '12px',
+          border: '2px solid #e0e0e0',
+          transition: 'all 0.3s ease',
+          transform: isItemDragging ? 'rotate(2deg) scale(1.05)' : 'scale(1)',
+          opacity: isItemDragging ? 0.7 : 1,
+          cursor: 'grab',
+          display: 'flex',
+          gap: '12px'
+        }}
+        onMouseEnter={(e) => {
+          if (!isItemDragging) {
+            e.currentTarget.style.borderColor = '#e8927c';
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isItemDragging) {
+            e.currentTarget.style.borderColor = '#e0e0e0';
+            e.currentTarget.style.boxShadow = 'none';
+          }
+        }}
+      >
+        {/* Thumbnail */}
+        <img
+          src={property.images && property.images[0] ? property.images[0] : 'https://via.placeholder.com/64x64?text=No+Image'}
+          alt={encodeHTML(property.title || property.location)}
+          onClick={() => onNavigate(property.id)}
+          style={{
+            width: '64px',
+            height: '64px',
+            objectFit: 'cover',
+            borderRadius: '6px',
+            cursor: 'pointer'
+          }}
+        />
+
+        {/* Info */}
+        <div style={{
+          flex: 1,
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}>
+          <h4
+            onClick={() => onNavigate(property.id)}
+            style={{
+              fontSize: '13px',
+              fontWeight: '600',
+              color: '#333',
+              margin: '0 0 4px 0',
+              cursor: 'pointer',
+              transition: 'color 0.3s ease',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#e8927c';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#333';
+            }}
+          >
+            {encodeHTML(property.title || property.location)}
+          </h4>
+          <p style={{
+            color: '#1e3a5f',
+            fontWeight: '700',
+            fontSize: '13px',
+            margin: 0
+          }}>
+            £{property.price.toLocaleString()}
+          </p>
+        </div>
+
+        {/* Remove Button */}
+        <button
+          onClick={() => onRemove(property.id)}
+          style={{
+            width: '32px',
+            height: '32px',
+            padding: 0,
+            border: 'none',
+            backgroundColor: 'transparent',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease',
+            color: '#999',
+            flexShrink: 0
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffe0d6';
+            e.currentTarget.style.color = '#e8927c';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = '#999';
+          }}
+          aria-label="Remove from favourites"
+          title="Remove from favourites"
+        >
+          <X size={16} />
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -108,10 +210,8 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
       <div style={{ padding: '16px' }}>
         {/* Always show droppable area */}
         <div
+          ref={dropRef}
           className="favourites-droppable"
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -121,7 +221,8 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
             borderRadius: '8px',
             transition: 'all 0.2s ease',
             backgroundColor: isDragOver ? '#f0f5fa' : 'transparent',
-            border: isDragOver ? '2px dashed #4a90e2' : '2px solid transparent'
+            border: isDragOver ? '2px dashed #4a90e2' : '2px solid transparent',
+            pointerEvents: 'auto',
           }}
         >
           {favourites.length === 0 ? (
@@ -148,122 +249,13 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onViewDetails, 
             </div>
           ) : (
             <>
-              {favourites.map((property, index) => (
-                <div
+              {favourites.map((property) => (
+                <DraggableFavouriteItem
                   key={property.id}
-                  draggable
-                  onDragStart={(e) => handleRemoveDragStart(e, property.id)}
-                  onDragEnd={handleItemDragEnd}
-                  style={{
-                    backgroundColor: '#f9f9f9',
-                    borderRadius: '8px',
-                    padding: '12px',
-                    border: '2px solid #e0e0e0',
-                    transition: 'all 0.3s ease',
-                    transform: draggedItemId === property.id ? 'rotate(2deg) scale(1.05)' : 'scale(1)',
-                    opacity: draggedItemId === property.id ? 0.7 : 1,
-                    cursor: 'grab',
-                    display: 'flex',
-                    gap: '12px'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (draggedItemId !== property.id) {
-                      e.currentTarget.style.borderColor = '#e8927c';
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (draggedItemId !== property.id) {
-                      e.currentTarget.style.borderColor = '#e0e0e0';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }
-                  }}
-                >
-                  {/* Thumbnail */}
-                  <img
-                    src={property.images && property.images[0] ? property.images[0] : 'https://via.placeholder.com/64x64?text=No+Image'}
-                    alt={encodeHTML(property.title || property.location)}
-                    onClick={() => handleNavigateToProperty(property.id)}
-                    style={{
-                      width: '64px',
-                      height: '64px',
-                      objectFit: 'cover',
-                      borderRadius: '6px',
-                      cursor: 'pointer'
-                    }}
-                  />
-
-                  {/* Info */}
-                  <div style={{
-                    flex: 1,
-                    minWidth: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                  }}>
-                    <h4
-                      onClick={() => handleNavigateToProperty(property.id)}
-                      style={{
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: '#333',
-                        margin: '0 0 4px 0',
-                        cursor: 'pointer',
-                        transition: 'color 0.3s ease',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#e8927c';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#333';
-                      }}
-                    >
-                      {encodeHTML(property.title || property.location)}
-                    </h4>
-                    <p style={{
-                      color: '#1e3a5f',
-                      fontWeight: '700',
-                      fontSize: '13px',
-                      margin: 0
-                    }}>
-                      £{property.price.toLocaleString()}
-                    </p>
-                  </div>
-
-                  {/* Remove Button */}
-                  <button
-                    onClick={() => onRemove(property.id)}
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      padding: 0,
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'all 0.3s ease',
-                      color: '#999',
-                      flexShrink: 0
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ffe0d6';
-                      e.currentTarget.style.color = '#e8927c';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = '#999';
-                    }}
-                    aria-label="Remove from favourites"
-                    title="Remove from favourites"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
+                  property={property}
+                  onRemove={onRemove}
+                  onNavigate={handleNavigateToProperty}
+                />
               ))}
             </>
           )}

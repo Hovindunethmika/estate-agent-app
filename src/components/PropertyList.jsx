@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import PropertyCard from './PropertyCard';
 
-const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStart, favourites = [], onRemoveFromFavourites = null }) => {
+const PropertyList = ({ properties, onAddToFavourites, onViewDetails, favourites = [], onRemoveFromFavourites = null }) => {
   const [sortBy, setSortBy] = useState('default');
 
   // Check if property is favorited
@@ -90,14 +90,13 @@ const PropertyList = ({ properties, onAddToFavourites, onViewDetails, onDragStar
       </div>
 
       {/* Properties Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+      <div className="property-list-grid">
         {sortedProperties.map(property => (
           <PropertyCard 
             key={property.id} 
             property={property}
             onAddToFavourites={onAddToFavourites}
             onViewDetails={onViewDetails}
-            onDragStart={onDragStart}
             isDraggable={true}
             isFavourited={isFavourited(property.id)}
             onRemoveFromFavourites={onRemoveFromFavourites}

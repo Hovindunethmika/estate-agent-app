@@ -1,82 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import { FileText, Home, Map } from 'lucide-react';
 import { encodeHTML } from '../utils/securityUtils';
+import 'react-tabs/style/react-tabs.css';
 
 export default function PropertyTabs({ property }) {
-  const [activeTab, setActiveTab] = useState('description');
-
-  const tabs = [
-    { id: 'description', label: 'Description', icon: FileText },
-    { id: 'floorplan', label: 'Floor Plan', icon: Home },
-    { id: 'map', label: 'Location', icon: Map }
-  ];
-
   return (
     <div style={{ width: '100%' }}>
-      {/* Tabs List */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        backgroundColor: '#f3f4f6',
-        borderRadius: '8px 8px 0 0',
-        padding: '8px',
-        gap: '4px',
-        marginBottom: 0
-      }}>
-        {tabs.map(tab => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '12px 16px',
-                backgroundColor: isActive ? 'white' : 'transparent',
-                color: isActive ? '#1e3a5f' : '#666',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: isActive ? '600' : '500',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit'
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'rgba(30, 58, 95, 0.05)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }
-              }}
-            >
-              <Icon size={16} />
-              <span style={{
-                display: 'inline'
-              }}>
-                {tab.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      <Tabs className="property-tabs-container">
+        <TabList className="property-tabs-list">
+          <Tab className="property-tab">
+            <FileText size={16} />
+            <span>Description</span>
+          </Tab>
+          <Tab className="property-tab">
+            <Home size={16} />
+            <span>Floor Plan</span>
+          </Tab>
+          <Tab className="property-tab">
+            <Map size={16} />
+            <span>Location</span>
+          </Tab>
+        </TabList>
 
-      {/* Tab Content */}
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '0 0 8px 8px',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-        overflow: 'hidden'
-      }}>
         {/* Description Tab */}
-        {activeTab === 'description' && (
+        <TabPanel className="property-tab-panel">
           <div style={{ padding: '24px' }}>
             <h3 style={{
               fontSize: '20px',
@@ -108,10 +56,10 @@ export default function PropertyTabs({ property }) {
               </p>
             )}
           </div>
-        )}
+        </TabPanel>
 
         {/* Floor Plan Tab */}
-        {activeTab === 'floorplan' && (
+        <TabPanel className="property-tab-panel">
           <div style={{ padding: '24px' }}>
             <h3 style={{
               fontSize: '20px',
@@ -156,10 +104,10 @@ export default function PropertyTabs({ property }) {
               )}
             </div>
           </div>
-        )}
+        </TabPanel>
 
         {/* Location Tab */}
-        {activeTab === 'map' && (
+        <TabPanel className="property-tab-panel">
           <div style={{ padding: '24px' }}>
             <h3 style={{
               fontSize: '20px',
@@ -195,8 +143,8 @@ export default function PropertyTabs({ property }) {
               📍 {encodeHTML(property.location)}, {encodeHTML(property.postcode || 'UK')}
             </p>
           </div>
-        )}
-      </div>
+        </TabPanel>
+      </Tabs>
     </div>
   );
 }

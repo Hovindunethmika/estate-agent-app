@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import HomePage from './pages/HomePage';
 import PropertyDetailsPage from './pages/PropertyDetailsPage';
 import './App.css';
@@ -18,15 +20,14 @@ const PROPERTIES_DATA = [
     short_description: "Stunning 3-bedroom Victorian house with modern interior.",
     long_description: "Stunning 3-bedroom Victorian house with modern interior. This beautiful property features original period details combined with contemporary living spaces. The spacious garden is perfect for entertaining.",
     images: [
-      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1567573883475-8f5b8c5e7e0d?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1522777967541-ca05a3c9d60d?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1560448204-e02f11cb3367?w=800&h=600&fit=crop"
+      "/images/house 1/house 1 main.jpg",
+      "/images/house 1/alejandra-cifre-gonzalez-5nYLmG1m5lw-unsplash.jpg",
+      "/images/house 1/backbone-L4iRkKL5dng-unsplash.jpg",
+      "/images/house 1/spacejoy-trG8989WjFA-unsplash.jpg",
+      "/images/house 1/spacejoy-umAXneH4GhA-unsplash.jpg",
+      "/images/house 1/spacejoy-XM-miHibz64-unsplash.jpg"
     ],
-    floor_plan: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
+    floor_plan: "/images/house 1/house 1 main.jpg",
     latitude: 51.4084,
     longitude: -0.0193
   },
@@ -42,15 +43,14 @@ const PROPERTIES_DATA = [
     short_description: "Modern 2-bedroom apartment in prime location.",
     long_description: "Modern 2-bedroom apartment in prime location. Close to shops, restaurants and transport links. Recently renovated with quality finishes throughout.",
     images: [
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1502707291154-c309e1fae4c9?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1512917774080-9b274b0b0cb1?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1522156573992-46earth9c89a?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1502131143081-8b376e0dbbab?w=800&h=600&fit=crop"
+      "/images/flat 1/flat 1 main.jpg",
+      "/images/flat 1/becca-tapert-p6h5U-ns9o0-unsplash.jpg",
+      "/images/flat 1/julia-ABohRftG_Os-unsplash.jpg",
+      "/images/flat 1/minh-pham-7pCFUybP_P8-unsplash.jpg",
+      "/images/flat 1/roxanne-joncas-DxLGT3bEKkE-unsplash.jpg",
+      "/images/flat 1/sophie-peng-HaP28Y3ZGSg-unsplash.jpg"
     ],
-    floor_plan: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
+    floor_plan: "/images/flat 1/flat 1 main.jpg",
     latitude: 51.5339,
     longitude: -0.1370
   },
@@ -66,15 +66,14 @@ const PROPERTIES_DATA = [
     short_description: "Luxury 4-bedroom family home with garden.",
     long_description: "Luxury 4-bedroom family home with garden. Prestigious Chelsea location with excellent schools nearby. Includes off-street parking and mature landscaping.",
     images: [
-      "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1615899291744-a91733e01d8d?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1613489261073-6f13ee77a4be?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507652313519-d4dc28516e98?w=800&h=600&fit=crop"
+      "/images/house 2/house 2 main.jpg",
+      "/images/house 2/bailey-alexander-cYeCxtKpTTQ-unsplash.jpg",
+      "/images/house 2/lotus-design-n-print-g51F6-WYzyU-unsplash.jpg",
+      "/images/house 2/spacejoy-KSfe2Z4REEM-unsplash.jpg",
+      "/images/house 2/spacejoy-RUvW1KGD9a4-unsplash.jpg",
+      "/images/house 2/spacejoy-YI2YkyaREHk-unsplash.jpg"
     ],
-    floor_plan: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop",
+    floor_plan: "/images/house 2/house 2 main.jpg",
     latitude: 51.4869,
     longitude: -0.1719
   },
@@ -90,15 +89,14 @@ const PROPERTIES_DATA = [
     short_description: "Stylish studio apartment with river views.",
     long_description: "Stylish studio apartment with river views. High-spec modern design with contemporary kitchen and bathroom. Perfect for professionals or investors.",
     images: [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1574909114555-8d4f4c1f3d4e?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1502707291154-c309e1fae4c9?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1522156573992-46earth9c89a?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1565183938294-7563f2a60dba?w=800&h=600&fit=crop"
+      "/images/flat 2/flat 2 main.jpg",
+      "/images/flat 2/adam-winger-t4oVP2xFMJ8-unsplash.jpg",
+      "/images/flat 2/grovemade-dS62MvK4CtM-unsplash.jpg",
+      "/images/flat 2/johanne-pold-jacobsen-jKO_cXvui_E-unsplash.jpg",
+      "/images/flat 2/michal-parzuchowski-UrNjM4qXVts-unsplash.jpg",
+      "/images/flat 2/minh-pham-1_B4Zzh7UpQ-unsplash.jpg"
     ],
-    floor_plan: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+    floor_plan: "/images/flat 2/flat 2 main.jpg",
     latitude: 51.5041,
     longitude: -0.0215
   },
@@ -114,15 +112,14 @@ const PROPERTIES_DATA = [
     short_description: "Exceptional 5-bedroom townhouse in Mayfair.",
     long_description: "Exceptional 5-bedroom townhouse in Mayfair. Prime central London location with original period features and modern amenities. Ready to occupy.",
     images: [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1608873528504-d26e4c404cee?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1560448204-e02f11cb3367?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507652313519-d4dc28516e98?w=800&h=600&fit=crop"
+      "/images/house 3/house 3 main.jpg",
+      "/images/house 3/bilal-mansuri-vTj_dmFGB1Y-unsplash.jpg",
+      "/images/house 3/pankaj-shah-1ff_i7jO-4g-unsplash.jpg",
+      "/images/house 3/spacejoy-1vieZivk1As-unsplash.jpg",
+      "/images/house 3/spacejoy-65k2klkcvT8-unsplash.jpg",
+      "/images/house 3/spacejoy-XM-miHibz64-unsplash (1).jpg"
     ],
-    floor_plan: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+    floor_plan: "/images/house 3/house 3 main.jpg",
     latitude: 51.5074,
     longitude: -0.1477
   },
@@ -138,15 +135,14 @@ const PROPERTIES_DATA = [
     short_description: "Contemporary 2-bed flat with balcony.",
     long_description: "Contemporary 2-bed flat with balcony. Located on a vibrant high street with good amenities. Modern finishes with open plan living.",
     images: [
-      "https://images.unsplash.com/photo-1502672260066-6bc35f0af07e?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1578321272176-eea3f9df55f5?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1512917774080-9b274b0b0cb1?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1615899291744-a91733e01d8d?w=800&h=600&fit=crop"
+      "/images/flat 3/flat 3 main.jpg",
+      "/images/flat 3/lotus-design-n-print-4-7s995Kv1U-unsplash.jpg",
+      "/images/flat 3/lotus-design-n-print-WDUtNbot6Qw-unsplash.jpg",
+      "/images/flat 3/mykola-kolya-korzh-8jo4TvHtVKM-unsplash.jpg",
+      "/images/flat 3/prydumano-design-khtBWc3U57Q-unsplash.jpg",
+      "/images/flat 3/prydumano-design-VZ2z8ozzy10-unsplash.jpg"
     ],
-    floor_plan: "https://images.unsplash.com/photo-1502672260066-6bc35f0af07e?w=800&h=600&fit=crop",
+    floor_plan: "/images/flat 3/flat 3 main.jpg",
     latitude: 51.4084,
     longitude: -0.0193
   },
@@ -162,15 +158,14 @@ const PROPERTIES_DATA = [
     short_description: "Charming 3-bedroom semi-detached house.",
     long_description: "Charming 3-bedroom semi-detached house. Located in popular residential area with excellent schools and transport. Well-maintained with potential for extension.",
     images: [
-      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1580587771525-78991c7aeb1b?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1564399579545-f5371407e961?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1502707291154-c309e1fae4c9?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&h=600&fit=crop"
+      "/images/house 4/house 4 main.jpg",
+      "/images/house 4/antoine-gravier-2QxjeVERIPw-unsplash.jpg",
+      "/images/house 4/geike-verniers-cf0GUoIOBmc-unsplash.jpg",
+      "/images/house 4/jason-briscoe-AQl-J19ocWE-unsplash.jpg",
+      "/images/house 4/kara-eads-L7EwHkq1B2s-unsplash.jpg",
+      "/images/house 4/spacejoy-MjvGoa_oRts-unsplash.jpg"
     ],
-    floor_plan: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+    floor_plan: "/images/house 4/house 4 main.jpg",
     latitude: 51.5339,
     longitude: -0.1370
   }
@@ -234,35 +229,37 @@ const App = () => {
 
   // Render app with routing
   return (
-    <Router>
-      <Routes>
-        <Route 
-          path="/" 
-          element={
-            <HomePage 
-              allProperties={allProperties}
-              favourites={favourites}
-              onAddToFavourites={handleAddToFavourites}
-              onRemoveFromFavourites={handleRemoveFromFavourites}
-              onClearFavourites={handleClearFavourites}
-              onDropOnFavourites={handleDropOnFavourites}
-              onDragOutRemoveFromFavourites={handleDragOutRemoveFromFavourites}
-            />
-          }
-        />
-        <Route 
-          path="/property/:id" 
-          element={
-            <PropertyDetailsPage 
-              allProperties={allProperties}
-              onAddToFavourites={handleAddToFavourites}
-              onRemoveFromFavourites={handleRemoveFromFavourites}
-              favourites={favourites}
-            />
-          }
-        />
-      </Routes>
-    </Router>
+    <DndProvider backend={HTML5Backend}>
+      <Router>
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <HomePage 
+                allProperties={allProperties}
+                favourites={favourites}
+                onAddToFavourites={handleAddToFavourites}
+                onRemoveFromFavourites={handleRemoveFromFavourites}
+                onClearFavourites={handleClearFavourites}
+                onDropOnFavourites={handleDropOnFavourites}
+                onDragOutRemoveFromFavourites={handleDragOutRemoveFromFavourites}
+              />
+            }
+          />
+          <Route 
+            path="/property/:id" 
+            element={
+              <PropertyDetailsPage 
+                allProperties={allProperties}
+                onAddToFavourites={handleAddToFavourites}
+                onRemoveFromFavourites={handleRemoveFromFavourites}
+                favourites={favourites}
+              />
+            }
+          />
+        </Routes>
+      </Router>
+    </DndProvider>
   );
 };
 
