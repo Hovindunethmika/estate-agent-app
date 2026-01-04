@@ -112,12 +112,25 @@
 
 .rw-datepicker-btn {
   padding: 0.5rem !important;
-  color: var(--text-light);
+  color: white !important;
+  background-color: var(--primary) !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
 }
 
 .rw-datepicker-btn:hover {
-  background-color: var(--primary-light) !important;
-  color: var(--primary);
+  background-color: var(--primary-dark) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3) !important;
 }
 
 .rw-calendar {
@@ -5396,18 +5409,27 @@ small, .text-small {
 }
 
 .rw-datepicker-btn {
-  background-color: transparent;
+  background-color: var(--primary);
   border: none;
-  color: var(--text-light);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  color: white;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .rw-datepicker-btn:hover {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
-  border-radius: var(--border-radius-sm);
+  background-color: var(--primary-dark);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+  border-radius: 6px;
 }
 
 .rw-calendar {
