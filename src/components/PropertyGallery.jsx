@@ -30,7 +30,8 @@ export default function PropertyGallery({ images, title }) {
     original: image,
     thumbnail: image,
     originalAlt: `${encodeHTML(title)} - Image ${index + 1}`,
-    thumbnailAlt: `${encodeHTML(title)} - Thumbnail ${index + 1}`
+    thumbnailAlt: `${encodeHTML(title)} - Thumbnail ${index + 1}`,
+    description: undefined
   }));
 
   return (

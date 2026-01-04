@@ -57,6 +57,16 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
     }
   };
 
+  const handleToggleFavourite = () => {
+    if (isFav && onRemoveFromFavourites) {
+      onRemoveFromFavourites(propertyData.id);
+      setIsFav(false);
+    } else if (!isFav && onAddToFavourites) {
+      onAddToFavourites(propertyData);
+      setIsFav(true);
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       if (onClose) {
@@ -143,7 +153,11 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
 
       {/* Tabs Section */}
       <section className="property-tabs-section">
-        <PropertyTabs property={propertyData} />
+        <PropertyTabs 
+          property={propertyData} 
+          isFavourite={isFav}
+          onToggleFavourite={handleToggleFavourite}
+        />
       </section>
     </>
   );
@@ -155,40 +169,14 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
         <div className="modal-overlay" onClick={onClose}></div>
         <div className={`modal-content property-details-content ${isFullscreen ? 'fullscreen' : ''}`}>
           {/* Modal Header */}
-          <div className="modal-header property-details-header">
-            <div>
-              <h2 id="property-details-title" className="modal-title">
-                {encodeHTML(propertyData.location)}
-              </h2>
-              <p className="property-postcode">
-                <strong>{encodeHTML(propertyData.postcode)}</strong>
-              </p>
-            </div>
-            <div className="header-buttons">
-              <button 
-                onClick={handleAddToFavourites}
-                className="heart-button"
-                aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
-                title={isFav ? 'Remove from favourites' : 'Add to favourites'}
-              >
-                <Heart
-                  size={24}
-                  strokeWidth={2.5}
-                  style={{
-                    color: isFav ? '#FF6B6B' : '#FF6B6B',
-                    fill: isFav ? '#FF6B6B' : 'none',
-                    stroke: isFav ? '#FF6B6B' : '#FF6B6B'
-                  }}
-                />
-              </button>
-              <button 
-                onClick={onClose} 
-                className="modal-close" 
-                aria-label="Close property details"
-              >
-                ✕
-              </button>
-            </div>
+          <div className="modal-header property-details-header" style={{ justifyContent: 'flex-end' }}>
+            <button 
+              onClick={onClose} 
+              className="modal-close" 
+              aria-label="Close property details"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Modal Body */}
@@ -219,34 +207,6 @@ const PropertyDetails = ({ property = null, propertyId = null, onClose = null, o
 
   return (
     <div className="property-details-page-content">
-      {/* Page Header */}
-      <div className="property-page-header">
-        <div>
-          <h2 id="property-details-title" className="page-title">
-            {encodeHTML(propertyData.location)}
-          </h2>
-          <p className="property-postcode">
-            <strong>{encodeHTML(propertyData.postcode)}</strong>
-          </p>
-        </div>
-        <button 
-          onClick={handleAddToFavourites}
-          className="heart-button-page"
-          aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
-          title={isFav ? 'Remove from favourites' : 'Add to favourites'}
-        >
-          <Heart
-            size={24}
-            strokeWidth={2.5}
-            style={{
-              color: isFav ? '#FF6B6B' : '#FF6B6B',
-              fill: isFav ? '#FF6B6B' : 'none',
-              stroke: isFav ? '#FF6B6B' : '#FF6B6B'
-            }}
-          />
-        </button>
-      </div>
-
       {/* Page Body */}
       <div className="property-page-body">
         {renderPropertyContent()}

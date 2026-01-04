@@ -174,8 +174,8 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOutRemove
     }}>
       {/* Header */}
       <div style={{
-        backgroundColor: '#1e3a5f',
-        color: 'white',
+        backgroundColor: '#bbdefb',
+        color: '#1e3a5f',
         padding: '16px',
         borderBottom: '1px solid #e0e0e0',
         display: 'flex',
@@ -187,7 +187,7 @@ const FavouritesList = ({ favourites, onRemove, onClear, onDrop, onDragOutRemove
           alignItems: 'center',
           gap: '8px'
         }}>
-          <Heart size={20} strokeWidth={2.5} style={{ fill: 'white', color: 'white', stroke: 'white' }} />
+          <Heart size={20} strokeWidth={2.5} style={{ fill: '#1e3a5f', color: '#1e3a5f', stroke: '#1e3a5f' }} />
           <h3 style={{
             fontSize: '18px',
             fontWeight: '700',

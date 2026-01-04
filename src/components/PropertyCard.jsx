@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const PropertyCard = ({ property, onAddToFavourites, isDraggable = true, isFavourited = false, onRemoveFromFavourites = null }) => {
   const [isDraggingState, setIsDraggingState] = useState(false);
+  const [localIsFavourited, setLocalIsFavourited] = useState(isFavourited);
   const navigate = useNavigate();
 
   // Setup drag with react-dnd
@@ -26,14 +27,20 @@ const PropertyCard = ({ property, onAddToFavourites, isDraggable = true, isFavou
     setIsDraggingState(isDragging);
   }, [isDragging]);
 
+  // Sync local state with prop
+  useEffect(() => {
+    setLocalIsFavourited(isFavourited);
+  }, [isFavourited]);
+
   const handleAddToFavourites = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isFavourited && onRemoveFromFavourites) {
+    if (localIsFavourited && onRemoveFromFavourites) {
       onRemoveFromFavourites(property.id);
-    } else if (!isFavourited && onAddToFavourites) {
+    } else if (!localIsFavourited && onAddToFavourites) {
       onAddToFavourites(property);
     }
+    setLocalIsFavourited(!localIsFavourited);
   };
 
   const getImageSource = () => {
@@ -125,11 +132,11 @@ const PropertyCard = ({ property, onAddToFavourites, isDraggable = true, isFavou
             position: 'absolute',
             top: '12px',
             right: '12px',
-            width: '40px',
-            height: '40px',
+            width: '30px',
+            height: '30px',
             borderRadius: '50%',
             border: 'none',
-            backgroundColor: isFavourited ? '#e8927c' : 'white',
+            backgroundColor: localIsFavourited ? '#e8927c' : 'white',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             cursor: 'pointer',
             display: 'flex',
@@ -139,19 +146,19 @@ const PropertyCard = ({ property, onAddToFavourites, isDraggable = true, isFavou
             zIndex: 3
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = isFavourited ? '#d67b65' : '#f5f5f5';
+            e.currentTarget.style.backgroundColor = localIsFavourited ? '#d67b65' : '#f5f5f5';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = isFavourited ? '#e8927c' : 'white';
+            e.currentTarget.style.backgroundColor = localIsFavourited ? '#e8927c' : 'white';
           }}
-          aria-label={isFavourited ? 'Remove from favourites' : 'Add to favourites'}
-          title={isFavourited ? 'Remove from favourites' : 'Add to favourites'}
+          aria-label={localIsFavourited ? 'Remove from favourites' : 'Add to favourites'}
+          title={localIsFavourited ? 'Remove from favourites' : 'Add to favourites'}
         >
           <Heart
-            size={20}
+            size={32}
             strokeWidth={2}
             style={{
-              fill: isFavourited ? '#FF6B6B' : 'none',
+              fill: localIsFavourited ? '#FF6B6B' : 'none',
               color: '#FF6B6B',
               stroke: '#FF6B6B',
               transition: 'all 0.3s ease'
