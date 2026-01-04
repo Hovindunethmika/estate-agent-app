@@ -66,10 +66,17 @@
 }
 
 .rw-dropdownlist-btn {
-  background-color: white !important;
+  background-color: var(--primary) !important;
   border: none !important;
-  color: var(--text-light);
-  padding: 0.5rem !important;
+  color: white !important;
+  padding: 0.5rem 0.75rem !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .rw-dropdownlist-popup {
@@ -222,22 +229,32 @@
 }
 
 .rw-numberpicker-btn {
-  background-color: transparent !important;
+  background-color: var(--primary) !important;
   border: none !important;
-  color: var(--primary);
-  padding: 0.5rem !important;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  color: white !important;
+  padding: 0.5rem 0.75rem !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
 }
 
 .rw-numberpicker-btn:hover {
-  background-color: var(--primary-light) !important;
-  color: var(--primary);
+  background-color: var(--primary-dark) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3) !important;
 }
 
 .rw-numberpicker-btn:active {
-  color: var(--primary-dark);
+  color: white !important;
+  transform: translateY(0) !important;
+}
 }
 
 /* ============================================
@@ -5283,14 +5300,27 @@ small, .text-small {
 }
 
 .rw-dropdownlist-btn {
-  background-color: var(--bg-white);
+  background-color: var(--primary);
   border: none;
-  color: var(--text-light);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
 }
 
-.rw-dropdownlist-popup {
-  border: 1px solid var(--border-color);
-  border-top: none;
+.rw-dropdownlist-btn:hover {
+  background-color: var(--primary-dark);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
+}
   background-color: var(--bg-white);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
@@ -5355,22 +5385,32 @@ small, .text-small {
 }
 
 .rw-numberpicker-btn {
-  background-color: transparent;
+  background-color: var(--primary);
   border: none;
-  color: var(--primary-color);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  color: white;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
   font-weight: 600;
-  transition: var(--transition);
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
 }
 
 .rw-numberpicker-btn:hover {
-  background-color: var(--primary-light);
-  border-radius: var(--border-radius-sm);
+  background-color: var(--primary-dark);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
+  border-radius: 6px;
 }
 
 .rw-numberpicker-btn:active {
-  color: var(--primary-dark);
+  color: white;
+  transform: translateY(0);
 }
 
 /* DatePicker Widget */
@@ -5560,18 +5600,27 @@ small, .text-small {
 }
 
 .rw-combobox-btn {
-  background-color: transparent;
+  background-color: var(--primary);
   border: none;
-  color: var(--text-light);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  color: white;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .rw-combobox-btn:hover {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
-  border-radius: var(--border-radius-sm);
+  background-color: var(--primary-dark);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
+  border-radius: 6px;
 }
 
 .rw-combobox-popup {
