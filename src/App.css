@@ -111,26 +111,23 @@
 }
 
 .rw-datepicker-btn {
-  padding: 0.5rem !important;
-  color: white !important;
-  background-color: var(--primary) !important;
+  background-color: white !important;
   border: none !important;
-  border-radius: 6px !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
   cursor: pointer !important;
-  font-weight: 600 !important;
-  transition: all 0.2s ease !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  transition: all 0.2s ease !important;
   min-width: 40px !important;
   min-height: 40px !important;
 }
 
 .rw-datepicker-btn:hover {
-  background-color: var(--primary-dark) !important;
-  color: white !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3) !important;
+  background-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+  transform: scale(1.05) !important;
 }
 
 .rw-calendar {
@@ -222,31 +219,95 @@
 }
 
 .rw-numberpicker-btn {
-  background-color: var(--primary) !important;
+  background-color: white !important;
   border: none !important;
-  color: white !important;
-  padding: 0.5rem 0.75rem !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
   cursor: pointer !important;
-  font-weight: 600 !important;
-  transition: all 0.2s ease !important;
-  border-radius: 6px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  transition: all 0.2s ease !important;
   min-width: 36px !important;
   min-height: 36px !important;
 }
 
 .rw-numberpicker-btn:hover {
-  background-color: var(--primary-dark) !important;
-  color: white !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.2) !important;
+  background-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+  transform: scale(1.05) !important;
 }
 
 .rw-numberpicker-btn:active {
-  color: white !important;
-  transform: translateY(0) !important;
+  transform: scale(0.98) !important;
+}
+
+/* Combobox Button */
+.rw-combobox-btn,
+.rw-input-addon {
+  background-color: white !important;
+  border: none !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+}
+
+.rw-combobox-btn:hover,
+.rw-input-addon:hover {
+  background-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+  transform: scale(1.05) !important;
+}
+
+.rw-combobox-btn:active,
+.rw-input-addon:active {
+  transform: scale(0.98) !important;
+}
+
+/* Generic Picker Button - Override react-widgets defaults */
+.rw-picker-btn,
+button.rw-picker-btn {
+  background-color: white !important;
+  border: none !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  transition: all 0.2s ease !important;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+  outline: 0;
+  box-sizing: border-box;
+}
+
+.rw-picker-btn:hover,
+button.rw-picker-btn:hover {
+  background-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+  transform: scale(1.05) !important;
+}
+
+.rw-picker-btn:active,
+button.rw-picker-btn:active {
+  transform: scale(0.98) !important;
+}
+
+.rw-picker-btn:disabled,
+button.rw-picker-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
 
 /* ============================================
@@ -5402,31 +5463,27 @@ small, .text-small {
 }
 
 .rw-numberpicker-btn {
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: var(--transition);
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 36px;
-  min-height: 36px;
+  background-color: white !important;
+  border: none !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
 }
 
 .rw-numberpicker-btn:hover {
-  background-color: var(--primary-dark);
-  border-radius: 6px;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+  background-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+  transform: scale(1.05) !important;
 }
 
 .rw-numberpicker-btn:active {
-  color: var(--primary-dark);
+  transform: scale(0.98) !important;
 }
 
 /* DatePicker Widget */
@@ -5465,27 +5522,23 @@ small, .text-small {
 }
 
 .rw-datepicker-btn {
-  background-color: var(--primary);
-  border: none;
-  color: white;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 6px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  min-height: 40px;
+  background-color: white !important;
+  border: none !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
 }
 
 .rw-datepicker-btn:hover {
-  background-color: var(--primary-dark);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
-  border-radius: 6px;
+  background-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+  transform: scale(1.05) !important;
 }
 
 .rw-calendar {
@@ -5616,26 +5669,23 @@ small, .text-small {
 }
 
 .rw-combobox-btn {
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  transition: var(--transition);
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 36px;
-  min-height: 36px;
+  background-color: white !important;
+  border: none !important;
+  color: var(--text-light);
+  padding: 0.5rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
 }
 
 .rw-combobox-btn:hover {
-  background-color: var(--primary-dark);
-  color: white;
-  border-radius: 6px;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+  background-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+  transform: scale(1.05) !important;
 }
 
 .rw-combobox-popup {
