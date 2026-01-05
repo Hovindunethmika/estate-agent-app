@@ -1,0 +1,11 @@
+ESTATE AGENT APP - PROJECT LINKS
+==================================
+
+GitHub Repository:
+https://github.com/Hovindunethmika/estate-agent-app
+
+Deployed URL:
+https://hovindunethmika.github.io/estate-agent-app/
+
+Development URL (Local):
+http://localhost:5173
