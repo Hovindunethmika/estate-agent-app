@@ -110,6 +110,12 @@ export default function PropertyTabs({ property, isFavourite = false, onToggleFa
         {/* Location Tab */}
         <TabPanel className="property-tab-panel">
           <div style={{ padding: '24px' }}>
+            <h3 style={{
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#1e3a5f',
+              marginBottom: '16px'
+            }}>Location</h3>
             <div style={{
               backgroundColor: '#f9f9f9',
               borderRadius: '8px',
@@ -117,7 +123,7 @@ export default function PropertyTabs({ property, isFavourite = false, onToggleFa
               aspectRatio: '16 / 10'
             }}>
               <iframe
-                title="Location Map"
+                title={`Map for ${property.location}`}
                 style={{
                   width: '100%',
                   height: '100%',
